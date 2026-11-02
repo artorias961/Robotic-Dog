@@ -1,0 +1,71 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "windows",
+      "displayName": "Windows Debug (portable WinLibs)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/windows",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "${sourceDir}/tools/mingw64/bin/g++.exe",
+        "CMAKE_MAKE_PROGRAM": "${sourceDir}/tools/mingw64/bin/ninja.exe"
+      },
+      "cmakeExecutable": "${sourceDir}/tools/mingw64/bin/cmake.exe",
+      "environment": {
+        "PATH": "${sourceDir}/tools/mingw64/bin;$penv{PATH}"
+      }
+    },
+    {
+      "name": "linux",
+      "displayName": "Linux x86-64 Debug (portable xPack tools)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/linux",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "${sourceDir}/tools/linux-x64/xpack-gcc-15.2.0-1/bin/g++",
+        "CMAKE_MAKE_PROGRAM": "${sourceDir}/tools/linux-x64/xpack-ninja-build-1.13.1-1/bin/ninja",
+        "CMAKE_EXE_LINKER_FLAGS": "-static-libgcc -static-libstdc++"
+      },
+      "cmakeExecutable": "${sourceDir}/tools/linux-x64/xpack-cmake-3.31.9-1/bin/cmake",
+      "environment": {
+        "PATH": "${sourceDir}/tools/linux-x64/xpack-gcc-15.2.0-1/bin:${sourceDir}/tools/linux-x64/xpack-ninja-build-1.13.1-1/bin:${sourceDir}/tools/linux-x64/xpack-cmake-3.31.9-1/bin:$penv{PATH}"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows",
+      "configurePreset": "windows",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "linux",
+      "configurePreset": "linux",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    }
+  ]
+}
