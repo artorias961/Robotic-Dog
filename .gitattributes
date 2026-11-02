@@ -1,0 +1,2 @@
+# Keep Linux setup scripts usable after Windows checkouts.
+*.sh text eol=lf

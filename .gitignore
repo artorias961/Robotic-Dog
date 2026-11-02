@@ -1,2 +1,6 @@
 # CMake-generated files and compiled output
 /build/
+
+# Linux toolchain downloads and extracted packages (installed by setup.sh)
+/tools/linux-x64/archives/
+/tools/linux-x64/xpack-*/
