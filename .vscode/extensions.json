@@ -5,12 +5,10 @@
     "ms-vscode.cpptools-extension-pack",
     "ms-vscode.cpptools-themes",
     "ms-vscode.cmake-tools",
-    "hediet.vscode-drawio",
     "donjayamanne.git-extension-pack",
     "mhutchie.git-graph",
     "donjayamanne.githistory",
     "codezombiech.gitignore",
     "eamodio.gitlens",
-    "platformio.platformio-ide"
   ]
 }

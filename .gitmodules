@@ -1,0 +1,3 @@
+[submodule "submodule/legs"]
+	path = submodule/legs
+	url = https://github.com/artorias961/Robotic-Dog-Leg.git
