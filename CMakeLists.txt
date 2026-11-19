@@ -18,3 +18,18 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(RoboticDog
     source/main.cpp
 )
+
+# Headers live in source/include; the code includes them as "quad/<name>.hpp".
+target_include_directories(RoboticDog PRIVATE source/include)
+
+# UDP sockets need Winsock on Windows; std::jthread needs the thread library on Linux.
+if(WIN32)
+    target_link_libraries(RoboticDog PRIVATE ws2_32)
+else()
+    find_package(Threads REQUIRED)
+    target_link_libraries(RoboticDog PRIVATE Threads::Threads)
+endif()
+
+if(NOT MSVC)
+    target_compile_options(RoboticDog PRIVATE -Wall -Wextra)
+endif()

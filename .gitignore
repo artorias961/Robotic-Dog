@@ -1,5 +1,5 @@
-# CMake-generated files and compiled output
-/build/
+# CMake-generated files and compiled output, in any folder
+build/
 
 # Linux toolchain downloads and extracted packages (installed by setup.sh)
 /tools/linux-x64/archives/
