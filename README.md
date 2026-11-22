@@ -7,8 +7,9 @@ Welcome to **Robotic-Dog**, a quadruped robot whose software is written in plain
 | Repository | What it holds | Wiki |
 |---|---|---|
 | [Robotic-Dog](https://github.com/artorias961/Robotic-Dog) (this repo) | The main project: computer software, tools, and installers | [Robotic-Dog wiki](https://github.com/artorias961/Robotic-Dog/wiki): plan, requirements, design, and test plan |
-| [Robotic-Dog-Leg](https://github.com/artorias961/Robotic-Dog-Leg), included at `submodule/legs` | The leg firmware for the Teensy 4.1 (Zephyr RTOS, C++20) | [Robotic-Dog-Leg wiki](https://github.com/artorias961/Robotic-Dog-Leg/wiki): setup, build, and flash guides |
+| [Robotic-Dog-Leg](https://github.com/artorias961/Robotic-Dog-Leg), included at `submodule/Legs` | The leg firmware for the Teensy 4.1 (Zephyr RTOS, C++20) | [Robotic-Dog-Leg wiki](https://github.com/artorias961/Robotic-Dog-Leg/wiki): setup, build, and flash guides |
 | [Robotic-Dog-Electrical](https://github.com/artorias961/Robotic-Dog-Electrical), included at `submodule/Electrical` | The schematics, PCB designs, and electrical engineering documentation | [Robotic-Dog-Electrical wiki](https://github.com/artorias961/Robotic-Dog-Electrical/wiki): electrical design, PCB layout, assembly, and testing |
+| [Robotic-Dog-Test](https://github.com/artorias961/Robotic-Dog-Test), included at `submodule/Test` | A sandbox for trying out code to see if it works. Nothing in it affects the other repositories | No wiki |
 
 ## Fresh clone
 
@@ -20,7 +21,7 @@ git clone --recurse-submodules https://github.com/artorias961/Robotic-Dog.git
 cd Robotic-Dog
 ```
 
-`--recurse-submodules` also downloads the leg firmware into `submodule/legs` and the electrical hardware files into `submodule/Electrical`. If either folder is empty because you cloned without submodules, run:
+`--recurse-submodules` also downloads the leg firmware into `submodule/Legs`, the electrical hardware files into `submodule/Electrical`, and the code sandbox into `submodule/Test`. If any of these folders is empty because you cloned without submodules, run:
 
 ```sh
 git submodule update --init --recursive

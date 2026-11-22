@@ -1,7 +1,11 @@
-[submodule "submodule/legs"]
-	path = submodule/legs
+[submodule "submodule/Legs"]
+	path = submodule/Legs
 	url = https://github.com/artorias961/Robotic-Dog-Leg.git
 
 [submodule "submodule/Electrical"]
 	path = submodule/Electrical
 	url = https://github.com/artorias961/Robotic-Dog-Electrical.git
+
+[submodule "submodule/Test"]
+	path = submodule/Test
+	url = https://github.com/artorias961/Robotic-Dog-Test.git
