@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
    width="1310"
-   height="1060"
-   viewBox="0 0 1310 1060"
+   height="1300"
+   viewBox="0 0 1310 1300"
    role="img"
-   aria-label="Zephyr firmware block diagram for one Teensy 4.1 leg controller"
+   aria-label="Zephyr firmware block diagram for one Teensy 4.1 leg controller: five threads, INA228 current sensing"
    version="1.1"
    id="svg93"
    sodipodi:docname="teensy-leg-firmware.svg"
@@ -22,14 +22,6 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#505050"
-     inkscape:zoom="3.8832641"
-     inkscape:cx="1120.7067"
-     inkscape:cy="951.51912"
-     inkscape:window-width="1278"
-     inkscape:window-height="1360"
-     inkscape:window-x="-7"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
      inkscape:current-layer="svg93" />
   <style
      id="style1">
@@ -55,1627 +47,370 @@ rect.node{stroke-width:1.1}
 .stance{fill:#2f6cb3}
 .swing{fill:none;stroke:#6f6d66;stroke-width:1}
 </style>
-  <rect
-     x="0.72836334"
-     y="-0.72836334"
-     width="1310"
-     height="1147.6877"
-     fill="#faf9f5"
-     id="rect1"
-     style="stroke-width:1.16199" />
-  <text
-     class="lbl"
-     x="38.550198"
-     y="932.97015"
-     id="text29-3"
-     style="font-size:10px;fill:#6f6d66"><tspan
-       sodipodi:role="line"
-       id="tspan141"
-       x="38.550198"
-       y="932.97015">Thread1 = Control (1kHz, prio High)</tspan><tspan
-       sodipodi:role="line"
-       id="tspan142"
-       x="38.550198"
-       y="945.47015">- k_sem_take(tick)← k_timer ISR @ 1 kHz</tspan><tspan
-       sodipodi:role="line"
-       x="38.550198"
-       y="957.97015"
-       id="tspan143">- read sensors (3× position, 3× current)</tspan><tspan
-       sodipodi:role="line"
-       x="38.550198"
-       y="970.47015"
-       id="tspan144">- copy setpoints from slot / drain command queue</tspan><tspan
-       sodipodi:role="line"
-       x="38.550198"
-       y="982.97015"
-       id="tspan145">- comms fresh?(setpoint &lt; 50 ms · heartbeat &lt; 500 ms)</tspan><tspan
-       sodipodi:role="line"
-       x="38.550198"
-       y="995.47015"
-       id="tspan146">- failsafe / disarm (the red box)</tspan><tspan
-       sodipodi:role="line"
-       x="38.550198"
-       y="1007.9702"
-       id="tspan147">- per-tick checks (armed? I &gt; hard limit? pos in range?)</tspan><tspan
-       sodipodi:role="line"
-       x="38.550198"
-       y="1020.4702"
-       id="tspan148">- 3× joint targets → FlexPWM</tspan><tspan
-       sodipodi:role="line"
-       x="38.550198"
-       y="1032.9702"
-       id="tspan149">- publish snapshot / set health flag</tspan></text>
-  <text
-     class="lbl"
-     x="353.73328"
-     y="940.13593"
-     id="text29-3-7"
-     style="font-size:10px;fill:#6f6d66"><tspan
-       sodipodi:role="line"
-       x="353.73328"
-       y="940.13593"
-       id="tspan149-0">Thread 2 — Net RX (prio mid): the first (leftmost) dashed container:</tspan><tspan
-       sodipodi:role="line"
-       x="353.73328"
-       y="952.63593"
-       id="tspan157" /><tspan
-       sodipodi:role="line"
-       x="353.73328"
-       y="965.13593"
-       id="tspan158">- recvfrom() blocks on UDP :5005</tspan><tspan
-       sodipodi:role="line"
-       x="353.73328"
-       y="977.63593"
-       id="tspan159">- magic + CRC ok?</tspan><tspan
-       sodipodi:role="line"
-       x="353.73328"
-       y="990.13593"
-       id="tspan160">- seq &gt; last_seq?</tspan><tspan
-       sodipodi:role="line"
-       x="353.73328"
-       y="1002.6359"
-       id="tspan161">- lost += gap / last_seq = seq</tspan><tspan
-       sodipodi:role="line"
-       x="353.73328"
-       y="1015.1359"
-       id="tspan162">- setpoints → slot / commands → k_msgq / heartbeat → t_hBeat</tspan></text>
-  <text
-     class="lbl"
-     x="682.64172"
-     y="948.77826"
-     id="text29-3-7-0"
-     style="font-size:10px;fill:#6f6d66"><tspan
-       sodipodi:role="line"
-       x="682.64172"
-       y="948.77826"
-       id="tspan162-4">Thread 3 — Telemetry TX (prio low): the third dashed container:</tspan><tspan
-       sodipodi:role="line"
-       x="682.64172"
-       y="961.27826"
-       id="tspan168" /><tspan
-       sodipodi:role="line"
-       x="682.64172"
-       y="973.77826"
-       id="tspan169">- k_sleep(2 ms) — 500 Hz</tspan><tspan
-       sodipodi:role="line"
-       x="682.64172"
-       y="986.27826"
-       id="tspan170">- copy snapshot + link stats</tspan><tspan
-       sodipodi:role="line"
-       x="682.64172"
-       y="998.77826"
-       id="tspan171">- build packet (seq++ · timestamp · CRC16)</tspan><tspan
-       sodipodi:role="line"
-       x="682.64172"
-       y="1011.2783"
-       id="tspan172">- sendto(master :5006)</tspan></text>
-  <text
-     class="lbl"
-     x="996.48352"
-     y="938.99414"
-     id="text29-3-7-0-8"
-     style="font-size:10px;fill:#6f6d66"><tspan
-       sodipodi:role="line"
-       x="996.48352"
-       y="938.99414"
-       id="tspan172-5">Thread 4 — Supervisor (10–50 Hz): the rightmost dashed container:</tspan><tspan
-       sodipodi:role="line"
-       x="996.48352"
-       y="951.49414"
-       id="tspan177" /><tspan
-       sodipodi:role="line"
-       x="996.48352"
-       y="963.99414"
-       id="tspan178">- k_sleep(cfg.period)</tspan><tspan
-       sodipodi:role="line"
-       x="996.48352"
-       y="976.49414"
-       id="tspan179">- slow checks (I²t, tracking error, stack margins; loss only logged)</tspan><tspan
-       sodipodi:role="line"
-       x="996.48352"
-       y="988.99414"
-       id="tspan180">- on fault: flag in telemetry, disable leg</tspan><tspan
-       sodipodi:role="line"
-       x="996.48352"
-       y="1001.4941"
-       id="tspan181">- health flag fresh?</tspan><tspan
-       sodipodi:role="line"
-       x="996.48352"
-       y="1013.9941"
-       id="tspan182">- feed WDOG / don’t feed → HW reset (both small boxes)</tspan></text>
-  <defs
-     id="defs1">
-    <marker
-       id="arr"
-       viewBox="0 0 10 10"
-       refX="8"
-       refY="5"
-       markerWidth="6.5"
-       markerHeight="6.5"
+  <rect x="0" y="0" width="1310" height="1300" fill="#faf9f5" id="rect1" />
+  <defs id="defs1">
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5"
        orient="auto-start-reverse">
-      <path
-         d="M2 1L8 5L2 9"
-         fill="none"
-         stroke="context-stroke"
-         stroke-width="1.5"
-         stroke-linecap="round"
-         stroke-linejoin="round"
-         id="path1" />
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5"
+         stroke-linecap="round" stroke-linejoin="round" id="path1" />
     </marker>
   </defs>
-  <text
-     class="title"
-     x="24"
-     y="34"
-     id="text1">Per-leg firmware on Teensy 4.1 — threads, data flow, checks</text>
-  <g
-     class="hw"
-     id="g3">
-    <rect
-       class="node"
-       x="520"
-       y="8"
-       width="340"
-       height="40"
-       rx="6"
-       id="rect2" />
-    <text
-       class="t1"
-       x="690"
-       y="23"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text2">Master (PC / Pi)</text>
-    <text
-       class="sub"
-       x="690"
-       y="38"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text3">gait planner · per-leg watchdog · logging</text>
+  <text class="title" x="24" y="34" id="t1">Per-leg firmware on Teensy 4.1 — threads, data flow, checks</text>
+  <g class="hw" id="g2">
+    <rect class="node" x="520" y="8" width="340" height="40" rx="6" id="r3" />
+    <text class="t1" x="690" y="20.25" text-anchor="middle" dominant-baseline="central" id="t4">Master (PC / Pi)</text>
+    <text class="sub" x="690" y="35.75" text-anchor="middle" dominant-baseline="central" id="t5">gait planner · per-leg watchdog · logging</text>
   </g>
-  <line
-     class="flow"
-     x1="690"
-     y1="52"
-     x2="690"
-     y2="64"
-     marker-start="url(#arr)"
-     marker-end="url(#arr)"
-     id="line3" />
-  <g
-     class="hw"
-     id="g4">
-    <rect
-       class="node"
-       x="20"
-       y="66"
-       width="1000"
-       height="40"
-       rx="6"
-       id="rect3" />
-    <text
-       class="t1"
-       x="520"
-       y="86"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text4">Ethernet switch · Zephyr net stack + ENET driver (RX/TX at ISR level) · UDP</text>
+  <polyline class="flow" points="690,52 690,64" marker-start="url(#arr)" marker-end="url(#arr)" id="a6" />
+  <g class="hw" id="g7">
+    <rect class="node" x="20" y="66" width="1000" height="40" rx="6" id="r8" />
+    <text class="t1" x="520" y="86" text-anchor="middle" dominant-baseline="central" id="t9">Ethernet switch · Zephyr net stack + ENET driver (RX/TX at ISR level) · UDP</text>
   </g>
-  <polyline
-     class="flow"
-     points="140,106 140,144"
-     marker-end="url(#arr)"
-     id="polyline4" />
-  <text
-     class="lbl"
-     x="150"
-     y="130"
-     id="text5">setpoints 100 Hz · commands · heartbeat 10 Hz</text>
-  <polyline
-     class="flow"
-     points="60,146 60,108"
-     marker-end="url(#arr)"
-     id="polylineAck" />
-  <text
-     class="lbl"
-     x="66"
-     y="130"
-     id="textAck">ACKs → :5006</text>
-  <polyline
-     class="flow"
-     points="1008,404 1008,108"
-     marker-end="url(#arr)"
-     id="polyline5" />
-  <text
-     class="lbl"
-     x="1016"
-     y="130"
-     id="text6">telemetry ~500 Hz → switch → master</text>
-  <rect
-     class="cont"
-     x="20"
-     y="146"
-     width="240"
-     height="440"
-     rx="10"
-     id="rect6" />
-  <text
-     class="contlbl"
-     x="140"
-     y="166"
-     text-anchor="middle"
-     id="text7">Net RX thread (prio mid)</text>
-  <g
-     class="step"
-     id="g9">
-    <rect
-       class="node"
-       x="30"
-       y="186"
-       width="200"
-       height="40"
-       rx="6"
-       id="rect7" />
-    <text
-       class="t1"
-       x="130"
-       y="199"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text8">recvfrom()</text>
-    <text
-       class="sub"
-       x="130"
-       y="214"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text9">UDP :5005 · master IP only</text>
+  <polyline class="flow" points="140,106 140,144" marker-end="url(#arr)" id="a10" />
+  <text class="lbl" x="150" y="130" id="t11">setpoints 100 Hz · commands · heartbeat 10 Hz</text>
+  <polyline class="flow" points="60,146 60,108" marker-end="url(#arr)" id="a12" />
+  <text class="lbl" x="66" y="130" id="t13">ACKs → :5006</text>
+  <polyline class="flow" points="1008,408 1008,108" marker-end="url(#arr)" id="a14" />
+  <text class="lbl" x="1016" y="130" id="t15">telemetry ~500 Hz → switch → master</text>
+  <rect class="cont" x="20" y="146" width="240" height="440" rx="10" id="c16" />
+  <text class="contlbl" x="140.0" y="166" text-anchor="middle" id="t17">Net RX thread (prio 5)</text>
+  <g class="step" id="g18">
+    <rect class="node" x="30" y="186" width="200" height="40" rx="6" id="r19" />
+    <text class="t1" x="130" y="198.25" text-anchor="middle" dominant-baseline="central" id="t20">recvfrom()</text>
+    <text class="sub" x="130" y="213.75" text-anchor="middle" dominant-baseline="central" id="t21">UDP :5005 · master IP only</text>
   </g>
-  <polyline
-     class="flow"
-     points="130,226 130,246"
-     marker-end="url(#arr)"
-     id="polyline9" />
-  <g
-     class="check"
-     id="g10">
-    <rect
-       class="node"
-       x="30"
-       y="248"
-       width="200"
-       height="40"
-       rx="6"
-       id="rect9" />
-    <text
-       class="t1"
-       x="130"
-       y="268"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text10">magic + CRC + leg ID ok?</text>
+  <polyline class="flow" points="130,226 130,246" marker-end="url(#arr)" id="a22" />
+  <g class="check" id="g23">
+    <rect class="node" x="30" y="248" width="200" height="40" rx="6" id="r24" />
+    <text class="t1" x="130" y="268" text-anchor="middle" dominant-baseline="central" id="t25">magic + CRC + leg ID ok?</text>
   </g>
-  <polyline
-     class="flow"
-     points="230,268 240,268 240,216 232,216"
-     marker-end="url(#arr)"
-     id="polyline10" />
-  <text
-     class="lbl"
-     x="266"
-     y="262"
-     id="text11">no · drop (CRC err++)</text>
-  <polyline
-     class="flow"
-     points="130,288 130,310"
-     marker-end="url(#arr)"
-     id="polyline11" />
-  <text
-     class="lbl"
-     x="138"
-     y="303"
-     id="text12">yes</text>
-  <g
-     class="check"
-     id="g13">
-    <rect
-       class="node"
-       x="30"
-       y="312"
-       width="200"
-       height="40"
-       rx="6"
-       id="rect12" />
-    <text
-       class="t1"
-       x="130"
-       y="332"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text13">seq &gt; last_seq?</text>
+  <polyline class="flow" points="230,268 240,268 240,216 232,216" marker-end="url(#arr)" id="a26" />
+  <text class="lbl" x="266" y="256" id="t27">no · drop</text>
+  <text class="lbl" x="266" y="268" id="t28">(bad CRC → CRC err++)</text>
+  <polyline class="flow" points="130,288 130,310" marker-end="url(#arr)" id="a29" />
+  <text class="lbl" x="138" y="303" id="t30">yes</text>
+  <g class="check" id="g31">
+    <rect class="node" x="30" y="312" width="200" height="40" rx="6" id="r32" />
+    <text class="t1" x="130" y="332" text-anchor="middle" dominant-baseline="central" id="t33">seq &gt; last_seq?</text>
   </g>
-  <polyline
-     class="flow"
-     points="230,332 250,332 250,198 232,198"
-     marker-end="url(#arr)"
-     id="polyline13" />
-  <text
-     class="lbl"
-     x="266"
-     y="326"
-     id="text14">no · dup, drop</text>
-  <text
-     class="lbl"
-     x="266"
-     y="338"
-     id="text14b">cmds: ack + dedupe</text>
-  <polyline
-     class="flow"
-     points="130,352 130,374"
-     marker-end="url(#arr)"
-     id="polyline14" />
-  <text
-     class="lbl"
-     x="138"
-     y="367"
-     id="text15">yes</text>
-  <g
-     class="step"
-     id="g17">
-    <rect
-       class="node"
-       x="30"
-       y="376"
-       width="200"
-       height="44"
-       rx="6"
-       id="rect15" />
-    <text
-       class="t1"
-       x="130"
-       y="391"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text16">lost += gap</text>
-    <text
-       class="sub"
-       x="130"
-       y="407"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text17">last_seq = seq</text>
+  <polyline class="flow" points="230,332 250,332 250,198 232,198" marker-end="url(#arr)" id="a34" />
+  <text class="lbl" x="266" y="326" id="t35">no · dup, drop</text>
+  <text class="lbl" x="266" y="338" id="t36">cmds: ack + dedupe</text>
+  <polyline class="flow" points="130,352 130,374" marker-end="url(#arr)" id="a37" />
+  <text class="lbl" x="138" y="367" id="t38">yes</text>
+  <g class="step" id="g39">
+    <rect class="node" x="30" y="376" width="200" height="44" rx="6" id="r40" />
+    <text class="t1" x="130" y="390.25" text-anchor="middle" dominant-baseline="central" id="t41">lost += gap</text>
+    <text class="sub" x="130" y="405.75" text-anchor="middle" dominant-baseline="central" id="t42">last_seq = seq</text>
   </g>
-  <polyline
-     class="flow"
-     points="130,420 130,442"
-     marker-end="url(#arr)"
-     id="polyline17" />
-  <g
-     class="step"
-     id="g20">
-    <rect
-       class="node"
-       x="30"
-       y="444"
-       width="200"
-       height="60"
-       rx="6"
-       id="rect17" />
-    <text
-       class="t1"
-       x="130"
-       y="458"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text18">setpoints → slot</text>
-    <text
-       class="sub"
-       x="130"
-       y="474"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text19">commands → k_msgq</text>
-    <text
-       class="sub"
-       x="130"
-       y="490"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text20">heartbeat → t_hBeat</text>
+  <polyline class="flow" points="130,420 130,442" marker-end="url(#arr)" id="a43" />
+  <g class="step" id="g44">
+    <rect class="node" x="30" y="444" width="200" height="60" rx="6" id="r45" />
+    <text class="t1" x="130" y="458.5" text-anchor="middle" dominant-baseline="central" id="t46">setpoints → slot</text>
+    <text class="sub" x="130" y="474" text-anchor="middle" dominant-baseline="central" id="t47">commands → k_msgq</text>
+    <text class="sub" x="130" y="489.5" text-anchor="middle" dominant-baseline="central" id="t48">heartbeat → t_hBeat</text>
   </g>
-  <polyline
-     class="flow"
-     points="130,504 130,540 25,540 25,206 28,206"
-     marker-end="url(#arr)"
-     id="polyline20" />
-  <polyline
-     class="flow"
-     points="230,462 246,462 246,435 268,435"
-     marker-end="url(#arr)"
-     id="polyline21" />
-  <polyline
-     class="flow"
-     points="230,480 252,480 252,525 268,525"
-     marker-end="url(#arr)"
-     id="polyline22" />
-  <g
-     class="ipc"
-     id="g24">
-    <rect
-       class="node"
-       x="272"
-       y="400"
-       width="102"
-       height="70"
-       rx="6"
-       id="rect22" />
-    <text
-       class="t1"
-       x="323"
-       y="420"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text22">setpoint slot</text>
-    <text
-       class="sub"
-       x="323"
-       y="437"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text23">seqlock —</text>
-    <text
-       class="sub"
-       x="323"
-       y="453"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text24">latest wins</text>
+  <polyline class="flow" points="130,504 130,540 25,540 25,206 28,206" marker-end="url(#arr)" id="a49" />
+  <polyline class="flow" points="230,462 246,462 246,435 268,435" marker-end="url(#arr)" id="a50" />
+  <polyline class="flow" points="230,480 252,480 252,525 268,525" marker-end="url(#arr)" id="a51" />
+  <g class="ipc" id="g52">
+    <rect class="node" x="272" y="400" width="102" height="70" rx="6" id="r53" />
+    <text class="t1" x="323" y="419.5" text-anchor="middle" dominant-baseline="central" id="t54">setpoint slot</text>
+    <text class="sub" x="323" y="435" text-anchor="middle" dominant-baseline="central" id="t55">spinlock copy —</text>
+    <text class="sub" x="323" y="450.5" text-anchor="middle" dominant-baseline="central" id="t56">latest wins</text>
   </g>
-  <g
-     class="ipc"
-     id="g27">
-    <rect
-       class="node"
-       x="272"
-       y="490"
-       width="102"
-       height="70"
-       rx="6"
-       id="rect24" />
-    <text
-       class="t1"
-       x="323"
-       y="510"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text25">command queue</text>
-    <text
-       class="sub"
-       x="323"
-       y="527"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text26">k_msgq</text>
-    <text
-       class="sub"
-       x="323"
-       y="543"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text27">depth 8</text>
+  <g class="ipc" id="g57">
+    <rect class="node" x="272" y="490" width="102" height="70" rx="6" id="r58" />
+    <text class="t1" x="323" y="509.5" text-anchor="middle" dominant-baseline="central" id="t59">command queue</text>
+    <text class="sub" x="323" y="525" text-anchor="middle" dominant-baseline="central" id="t60">k_msgq</text>
+    <text class="sub" x="323" y="540.5" text-anchor="middle" dominant-baseline="central" id="t61">depth 8</text>
   </g>
-  <polyline
-     class="flow"
-     points="374,420 380,420 380,318 396,318"
-     marker-end="url(#arr)"
-     id="polyline27" />
-  <polyline
-     class="flow"
-     points="374,510 387,510 387,336 396,336"
-     marker-end="url(#arr)"
-     id="polyline28" />
-  <text
-     class="lbl"
-     x="272"
-     y="582"
-     id="text28">both → control thread,</text>
-  <text
-     class="lbl"
-     x="272"
-     y="598"
-     id="text29">read every 1 kHz tick</text>
-  <rect
-     class="cont"
-     x="390"
-     y="146"
-     width="266"
-     height="568"
-     rx="10"
-     id="rect29" />
-  <text
-     class="contlbl"
-     x="523"
-     y="166"
-     text-anchor="middle"
-     id="text30">Control thread (1 kHz, prio high)</text>
-  <g
-     class="step"
-     id="g32">
-    <rect
-       class="node"
-       x="400"
-       y="186"
-       width="246"
-       height="44"
-       rx="6"
-       id="rect30" />
-    <text
-       class="t1"
-       x="523"
-       y="201"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text31">k_sem_take(tick)</text>
-    <text
-       class="sub"
-       x="523"
-       y="217"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text32">← k_timer ISR @ 1 kHz</text>
+  <g class="ipc" id="g62">
+    <rect class="node" x="272" y="580" width="102" height="70" rx="6" id="r63" />
+    <text class="t1" x="323" y="599.5" text-anchor="middle" dominant-baseline="central" id="t64">current slot</text>
+    <text class="sub" x="323" y="615" text-anchor="middle" dominant-baseline="central" id="t65">amps + read time</text>
+    <text class="sub" x="323" y="630.5" text-anchor="middle" dominant-baseline="central" id="t66">latest wins</text>
   </g>
-  <polyline
-     class="flow"
-     points="523,230 523,250"
-     marker-end="url(#arr)"
-     id="polyline32" />
-  <g
-     class="step"
-     id="g34">
-    <rect
-       class="node"
-       x="400"
-       y="252"
-       width="246"
-       height="44"
-       rx="6"
-       id="rect32" />
-    <text
-       class="t1"
-       x="523"
-       y="267"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text33">read sensors</text>
-    <text
-       class="sub"
-       x="523"
-       y="283"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text34">3× position, 3× current</text>
+  <polyline class="flow" points="374,420 380,420 380,318 396,318" marker-end="url(#arr)" id="a67" />
+  <polyline class="flow" points="374,510 387,510 387,336 396,336" marker-end="url(#arr)" id="a68" />
+  <polyline class="flow" points="374,615 388,615" marker-end="url(#arr)" id="a69" />
+  <text class="lbl" x="272" y="668" id="t70">all three → control,</text>
+  <text class="lbl" x="272" y="682" id="t71">read every 1 kHz tick</text>
+  <rect class="cont" x="390" y="146" width="266" height="618" rx="10" id="c72" />
+  <text class="contlbl" x="523.0" y="166" text-anchor="middle" id="t73">Control thread (1 kHz, prio 2)</text>
+  <g class="step" id="g74">
+    <rect class="node" x="400" y="186" width="246" height="44" rx="6" id="r75" />
+    <text class="t1" x="523" y="200.25" text-anchor="middle" dominant-baseline="central" id="t76">k_sem_take(tick)</text>
+    <text class="sub" x="523" y="215.75" text-anchor="middle" dominant-baseline="central" id="t77">← k_timer ISR @ 1 kHz</text>
   </g>
-  <polyline
-     class="flow"
-     points="523,296 523,316"
-     marker-end="url(#arr)"
-     id="polyline34" />
-  <g
-     class="step"
-     id="g36">
-    <rect
-       class="node"
-       x="400"
-       y="318"
-       width="246"
-       height="44"
-       rx="6"
-       id="rect34" />
-    <text
-       class="t1"
-       x="523"
-       y="333"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text35">copy setpoints from slot</text>
-    <text
-       class="sub"
-       x="523"
-       y="349"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text36">cmds: enable · disable · clear faults</text>
+  <polyline class="flow" points="523,230 523,250" marker-end="url(#arr)" id="a78" />
+  <g class="step" id="g79">
+    <rect class="node" x="400" y="252" width="246" height="56" rx="6" id="r80" />
+    <text class="t1" x="523" y="264.5" text-anchor="middle" dominant-baseline="central" id="t81">read sensors</text>
+    <text class="sub" x="523" y="280" text-anchor="middle" dominant-baseline="central" id="t82">3× position (ADC) · 3× current (slot)</text>
+    <text class="sub" x="523" y="295.5" text-anchor="middle" dominant-baseline="central" id="t83">3× ALRT pin (GPIO, no I²C)</text>
   </g>
-  <polyline
-     class="flow"
-     points="523,362 523,382"
-     marker-end="url(#arr)"
-     id="polyline36" />
-  <g
-     class="check"
-     id="g38">
-    <rect
-       class="node"
-       x="400"
-       y="384"
-       width="246"
-       height="48"
-       rx="6"
-       id="rect36" />
-    <text
-       class="t1"
-       x="523"
-       y="399"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text37">comms fresh?</text>
-    <text
-       class="sub"
-       x="523"
-       y="416"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text38">setpoint &lt; 50 ms · heartbeat &lt; 500 ms</text>
+  <polyline class="flow" points="523,308 523,328" marker-end="url(#arr)" id="a84" />
+  <g class="step" id="g85">
+    <rect class="node" x="400" y="330" width="246" height="56" rx="6" id="r86" />
+    <text class="t1" x="523" y="342.5" text-anchor="middle" dominant-baseline="central" id="t87">copy setpoints from slot</text>
+    <text class="sub" x="523" y="358" text-anchor="middle" dominant-baseline="central" id="t88">cmds: enable · disable · clear faults</text>
+    <text class="sub" x="523" y="373.5" text-anchor="middle" dominant-baseline="central" id="t89">ENABLE also asks: zero energy</text>
   </g>
-  <polyline
-     class="flow"
-     points="460,432 460,510"
-     marker-end="url(#arr)"
-     id="polyline38" />
-  <text
-     class="lbl"
-     x="468"
-     y="470"
-     id="text39">yes</text>
-  <polyline
-     class="flow"
-     points="588,432 588,444"
-     marker-end="url(#arr)"
-     id="polyline39" />
-  <text
-     class="lbl"
-     x="596"
-     y="437"
-     id="text40">no</text>
-  <g
-     class="fail"
-     id="g42">
-    <rect
-       class="node"
-       x="530"
-       y="446"
-       width="116"
-       height="44"
-       rx="6"
-       id="rect40" />
-    <text
-       class="t1"
-       x="588"
-       y="461"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text41">failsafe / disarm</text>
-    <text
-       class="sub"
-       x="588"
-       y="477"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text42">hold / torque off</text>
+  <polyline class="flow" points="523,386 523,406" marker-end="url(#arr)" id="a90" />
+  <g class="check" id="g91">
+    <rect class="node" x="400" y="408" width="246" height="56" rx="6" id="r92" />
+    <text class="t1" x="523" y="420.5" text-anchor="middle" dominant-baseline="central" id="t93">comms fresh?</text>
+    <text class="sub" x="523" y="436" text-anchor="middle" dominant-baseline="central" id="t94">heartbeat &lt; 500 ms, else failsafe</text>
+    <text class="sub" x="523" y="451.5" text-anchor="middle" dominant-baseline="central" id="t95">setpoint &lt; 50 ms, else hold targets</text>
   </g>
-  <polyline
-     class="flow"
-     points="588,490 588,510"
-     marker-end="url(#arr)"
-     id="polyline42" />
-  <g
-     class="check"
-     id="g45">
-    <rect
-       class="node"
-       x="400"
-       y="512"
-       width="246"
-       height="56"
-       rx="6"
-       id="rect42" />
-    <text
-       class="t1"
-       x="523"
-       y="526"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text43">per-tick checks</text>
-    <text
-       class="sub"
-       x="523"
-       y="541"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text44">armed? I &gt; hard limit? pos in range?</text>
-    <text
-       class="sub"
-       x="523"
-       y="556"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text45">over-I → leg PWM off · range → clamp</text>
+  <polyline class="flow" points="460,464 460,542" marker-end="url(#arr)" id="a96" />
+  <text class="lbl" x="468" y="484" id="t97">yes</text>
+  <polyline class="flow" points="588,464 588,476" marker-end="url(#arr)" id="a98" />
+  <text class="lbl" x="596" y="473" id="t99">no</text>
+  <g class="fail" id="g100">
+    <rect class="node" x="530" y="478" width="116" height="44" rx="6" id="r101" />
+    <text class="t1" x="588" y="492.25" text-anchor="middle" dominant-baseline="central" id="t102">failsafe / disarm</text>
+    <text class="sub" x="588" y="507.75" text-anchor="middle" dominant-baseline="central" id="t103">PWM off · CommsLost</text>
   </g>
-  <polyline
-     class="flow"
-     points="523,568 523,588"
-     marker-end="url(#arr)"
-     id="polyline45" />
-  <g
-     class="step"
-     id="g47">
-    <rect
-       class="node"
-       x="400"
-       y="590"
-       width="246"
-       height="44"
-       rx="6"
-       id="rect45" />
-    <text
-       class="t1"
-       x="523"
-       y="605"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text46">3× joint targets → FlexPWM</text>
-    <text
-       class="sub"
-       x="523"
-       y="621"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text47">servos now: direct · motors later: PID</text>
+  <polyline class="flow" points="588,522 588,542" marker-end="url(#arr)" id="a104" />
+  <g class="check" id="g105">
+    <rect class="node" x="400" y="544" width="246" height="72" rx="6" id="r106" />
+    <text class="t1" x="523" y="556.75" text-anchor="middle" dominant-baseline="central" id="t107">per-tick checks</text>
+    <text class="sub" x="523" y="572.25" text-anchor="middle" dominant-baseline="central" id="t108">armed? I &gt; limit? ALRT pin? current fresh?</text>
+    <text class="sub" x="523" y="587.75" text-anchor="middle" dominant-baseline="central" id="t109">pos in range?</text>
+    <text class="sub" x="523" y="603.25" text-anchor="middle" dominant-baseline="central" id="t110">trip → leg PWM off + latch · range → clamp</text>
   </g>
-  <polyline
-     class="flow"
-     points="523,634 523,650"
-     marker-end="url(#arr)"
-     id="polyline47" />
-  <g
-     class="step"
-     id="g49">
-    <rect
-       class="node"
-       x="400"
-       y="652"
-       width="246"
-       height="44"
-       rx="6"
-       id="rect47" />
-    <text
-       class="t1"
-       x="523"
-       y="667"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text48">publish snapshot</text>
-    <text
-       class="sub"
-       x="523"
-       y="683"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text49">set health flag</text>
+  <polyline class="flow" points="523,616 523,636" marker-end="url(#arr)" id="a111" />
+  <g class="step" id="g112">
+    <rect class="node" x="400" y="638" width="246" height="44" rx="6" id="r113" />
+    <text class="t1" x="523" y="652.25" text-anchor="middle" dominant-baseline="central" id="t114">3× joint targets → FlexPWM</text>
+    <text class="sub" x="523" y="667.75" text-anchor="middle" dominant-baseline="central" id="t115">servos now: direct · motors later: PID</text>
   </g>
-  <polyline
-     class="flow"
-     points="430,696 430,704 395,704 395,208 398,208"
-     marker-end="url(#arr)"
-     id="polyline49" />
-  <polyline
-     class="flow"
-     points="646,668 663,668 663,450 670,450"
-     marker-end="url(#arr)"
-     id="polyline50" />
-  <polyline
-     class="flow"
-     points="646,684 1288,684 1288,444 1262,444"
-     marker-end="url(#arr)"
-     id="polyline51" />
-  <text
-     class="lbl"
-     x="700"
-     y="676"
-     id="text51">health flag (set every tick, read by supervisor)</text>
-  <g
-     class="ipc"
-     id="g54">
-    <rect
-       class="node"
-       x="672"
-       y="420"
-       width="104"
-       height="70"
-       rx="6"
-       id="rect51" />
-    <text
-       class="t1"
-       x="724"
-       y="440"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text52">state snapshot</text>
-    <text
-       class="sub"
-       x="724"
-       y="457"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text53">double buffer</text>
-    <text
-       class="sub"
-       x="724"
-       y="473"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text54">ctrl → TX</text>
+  <polyline class="flow" points="523,682 523,700" marker-end="url(#arr)" id="a116" />
+  <g class="step" id="g117">
+    <rect class="node" x="400" y="702" width="246" height="44" rx="6" id="r118" />
+    <text class="t1" x="523" y="716.25" text-anchor="middle" dominant-baseline="central" id="t119">publish snapshot</text>
+    <text class="sub" x="523" y="731.75" text-anchor="middle" dominant-baseline="central" id="t120">set health flag</text>
   </g>
-  <polyline
-     class="flow"
-     points="776,450 784,450 784,282 796,282"
-     marker-end="url(#arr)"
-     id="polyline54" />
-  <rect
-     class="cont"
-     x="790"
-     y="146"
-     width="210"
-     height="354"
-     rx="10"
-     id="rect54" />
-  <text
-     class="contlbl"
-     x="895"
-     y="166"
-     text-anchor="middle"
-     id="text55">Telemetry TX thread (prio low)</text>
-  <g
-     class="step"
-     id="g56">
-    <rect
-       class="node"
-       x="800"
-       y="186"
-       width="190"
-       height="40"
-       rx="6"
-       id="rect55" />
-    <text
-       class="t1"
-       x="895"
-       y="206"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text56">k_sleep(2 ms) — 500 Hz</text>
+  <polyline class="flow" points="430,746 430,754 395,754 395,208 398,208" marker-end="url(#arr)" id="a121" />
+  <polyline class="flow" points="646,718 663,718 663,450 670,450" marker-end="url(#arr)" id="a122" />
+  <polyline class="flow" points="646,734 1288,734 1288,500 1262,500" marker-end="url(#arr)" id="a123" />
+  <text class="lbl" x="700" y="726" id="t124">health flag (set every tick, read by supervisor)</text>
+  <g class="ipc" id="g125">
+    <rect class="node" x="672" y="420" width="104" height="70" rx="6" id="r126" />
+    <text class="t1" x="724" y="439.5" text-anchor="middle" dominant-baseline="central" id="t127">state snapshot</text>
+    <text class="sub" x="724" y="455" text-anchor="middle" dominant-baseline="central" id="t128">double buffer</text>
+    <text class="sub" x="724" y="470.5" text-anchor="middle" dominant-baseline="central" id="t129">ctrl → TX · superv.</text>
   </g>
-  <polyline
-     class="flow"
-     points="895,226 895,250"
-     marker-end="url(#arr)"
-     id="polyline56" />
-  <g
-     class="step"
-     id="g58">
-    <rect
-       class="node"
-       x="800"
-       y="252"
-       width="190"
-       height="44"
-       rx="6"
-       id="rect56" />
-    <text
-       class="t1"
-       x="895"
-       y="267"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text57">copy snapshot</text>
-    <text
-       class="sub"
-       x="895"
-       y="283"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text58">+ link stats</text>
+  <polyline class="flow" points="776,450 784,450 784,282 796,282" marker-end="url(#arr)" id="a130" />
+  <rect class="cont" x="790" y="146" width="210" height="364" rx="10" id="c131" />
+  <text class="contlbl" x="895.0" y="166" text-anchor="middle" id="t132">Telemetry TX thread (prio 7)</text>
+  <g class="step" id="g133">
+    <rect class="node" x="800" y="186" width="190" height="40" rx="6" id="r134" />
+    <text class="t1" x="895" y="206" text-anchor="middle" dominant-baseline="central" id="t135">k_sleep(2 ms) — 500 Hz</text>
   </g>
-  <polyline
-     class="flow"
-     points="895,296 895,316"
-     marker-end="url(#arr)"
-     id="polyline58" />
-  <g
-     class="step"
-     id="g60">
-    <rect
-       class="node"
-       x="800"
-       y="318"
-       width="190"
-       height="44"
-       rx="6"
-       id="rect58" />
-    <text
-       class="t1"
-       x="895"
-       y="333"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text59">build packet</text>
-    <text
-       class="sub"
-       x="895"
-       y="349"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text60">seq++ · timestamp · CRC16</text>
+  <polyline class="flow" points="895,226 895,250" marker-end="url(#arr)" id="a136" />
+  <g class="step" id="g137">
+    <rect class="node" x="800" y="252" width="190" height="44" rx="6" id="r138" />
+    <text class="t1" x="895" y="266.25" text-anchor="middle" dominant-baseline="central" id="t139">copy snapshot</text>
+    <text class="sub" x="895" y="281.75" text-anchor="middle" dominant-baseline="central" id="t140">+ link stats</text>
   </g>
-  <polyline
-     class="flow"
-     points="895,362 895,382"
-     marker-end="url(#arr)"
-     id="polyline60" />
-  <g
-     class="step"
-     id="g61">
-    <rect
-       class="node"
-       x="800"
-       y="384"
-       width="190"
-       height="40"
-       rx="6"
-       id="rect60" />
-    <text
-       class="t1"
-       x="895"
-       y="404"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text61">sendto(master :5006)</text>
+  <polyline class="flow" points="895,296 895,316" marker-end="url(#arr)" id="a141" />
+  <g class="step" id="g142">
+    <rect class="node" x="800" y="318" width="190" height="44" rx="6" id="r143" />
+    <text class="t1" x="895" y="332.25" text-anchor="middle" dominant-baseline="central" id="t144">build packet</text>
+    <text class="sub" x="895" y="347.75" text-anchor="middle" dominant-baseline="central" id="t145">seq++ · timestamp · CRC16</text>
   </g>
-  <polyline
-     class="flow"
-     points="895,424 895,460 795,460 795,206 798,206"
-     marker-end="url(#arr)"
-     id="polyline61" />
-  <rect
-     class="cont"
-     x="1024"
-     y="146"
-     width="252"
-     height="434"
-     rx="10"
-     id="rect61" />
-  <text
-     class="contlbl"
-     x="1150"
-     y="166"
-     text-anchor="middle"
-     id="text62">Supervisor (10–50 Hz, tunable)</text>
-  <g
-     class="step"
-     id="g64">
-    <rect
-       class="node"
-       x="1040"
-       y="186"
-       width="220"
-       height="44"
-       rx="6"
-       id="rect62" />
-    <text
-       class="t1"
-       x="1150"
-       y="201"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text63">k_sleep(cfg.period)</text>
-    <text
-       class="sub"
-       x="1150"
-       y="217"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text64">default 50 ms — tunable</text>
+  <polyline class="flow" points="895,362 895,382" marker-end="url(#arr)" id="a146" />
+  <g class="step" id="g147">
+    <rect class="node" x="800" y="384" width="190" height="48" rx="6" id="r148" />
+    <text class="t1" x="895" y="400.25" text-anchor="middle" dominant-baseline="central" id="t149">sendto(master :5006)</text>
+    <text class="sub" x="895" y="415.75" text-anchor="middle" dominant-baseline="central" id="t150">count sent · log failures</text>
   </g>
-  <polyline
-     class="flow"
-     points="1150,230 1150,250"
-     marker-end="url(#arr)"
-     id="polyline64" />
-  <g
-     class="check"
-     id="g68">
-    <rect
-       class="node"
-       x="1040"
-       y="252"
-       width="220"
-       height="72"
-       rx="6"
-       id="rect64" />
-    <text
-       class="t1"
-       x="1150"
-       y="266"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text65">slow checks</text>
-    <text
-       class="sub"
-       x="1150"
-       y="281"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text66">I²t current window</text>
-    <text
-       class="sub"
-       x="1150"
-       y="296"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text67">tracking error persists?</text>
-    <text
-       class="sub"
-       x="1150"
-       y="311"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text68">stack margins · loss trend (logged)</text>
+  <polyline class="flow" points="895,432 895,468 795,468 795,206 798,206" marker-end="url(#arr)" id="a151" />
+  <text class="lbl" x="800" y="528" id="t152">supply readings (VBUS, energy) are not</text>
+  <text class="lbl" x="800" y="541" id="t153">in telemetry yet: protocol change on both sides</text>
+  <rect class="cont" x="1024" y="146" width="252" height="510" rx="10" id="c154" />
+  <text class="contlbl" x="1150.0" y="166" text-anchor="middle" id="t155">Supervisor (10–50 Hz, prio 9)</text>
+  <g class="step" id="g156">
+    <rect class="node" x="1040" y="186" width="220" height="44" rx="6" id="r157" />
+    <text class="t1" x="1150" y="200.25" text-anchor="middle" dominant-baseline="central" id="t158">k_sleep(cfg.period)</text>
+    <text class="sub" x="1150" y="215.75" text-anchor="middle" dominant-baseline="central" id="t159">default 50 ms — tunable</text>
   </g>
-  <polyline
-     class="flow"
-     points="1150,324 1150,344"
-     marker-end="url(#arr)"
-     id="polyline68" />
-  <g
-     class="step"
-     id="g70">
-    <rect
-       class="node"
-       x="1040"
-       y="346"
-       width="220"
-       height="44"
-       rx="6"
-       id="rect68" />
-    <text
-       class="t1"
-       x="1150"
-       y="361"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text69">on fault: flag in telemetry,</text>
-    <text
-       class="sub"
-       x="1150"
-       y="377"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text70">disable leg</text>
+  <polyline class="flow" points="1150,230 1150,250" marker-end="url(#arr)" id="a160" />
+  <g class="check" id="g161">
+    <rect class="node" x="1040" y="252" width="220" height="72" rx="6" id="r162" />
+    <text class="t1" x="1150" y="264.75" text-anchor="middle" dominant-baseline="central" id="t163">slow checks</text>
+    <text class="sub" x="1150" y="280.25" text-anchor="middle" dominant-baseline="central" id="t164">I²t current window</text>
+    <text class="sub" x="1150" y="295.75" text-anchor="middle" dominant-baseline="central" id="t165">tracking error persists?</text>
+    <text class="sub" x="1150" y="311.25" text-anchor="middle" dominant-baseline="central" id="t166">stack margins · loss trend (logged)</text>
   </g>
-  <polyline
-     class="flow"
-     points="1150,390 1150,410"
-     marker-end="url(#arr)"
-     id="polyline70" />
-  <g
-     class="check"
-     id="g72">
-    <rect
-       class="node"
-       x="1040"
-       y="412"
-       width="220"
-       height="44"
-       rx="6"
-       id="rect70" />
-    <text
-       class="t1"
-       x="1150"
-       y="427"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text71">health flag fresh?</text>
-    <text
-       class="sub"
-       x="1150"
-       y="443"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text72">(control thread alive)</text>
+  <polyline class="flow" points="1150,324 1150,344" marker-end="url(#arr)" id="a167" />
+  <g class="step" id="g168">
+    <rect class="node" x="1040" y="346" width="220" height="44" rx="6" id="r169" />
+    <text class="t1" x="1150" y="360.25" text-anchor="middle" dominant-baseline="central" id="t170">on fault: flag in telemetry,</text>
+    <text class="sub" x="1150" y="375.75" text-anchor="middle" dominant-baseline="central" id="t171">disable leg</text>
   </g>
-  <polyline
-     class="flow"
-     points="1090,456 1090,476"
-     marker-end="url(#arr)"
-     id="polyline72" />
-  <text
-     class="lbl"
-     x="1098"
-     y="470"
-     id="text73">yes</text>
-  <polyline
-     class="flow"
-     points="1210,456 1210,476"
-     marker-end="url(#arr)"
-     id="polyline73" />
-  <text
-     class="lbl"
-     x="1218"
-     y="470"
-     id="text74">no</text>
-  <g
-     class="step"
-     id="g76">
-    <rect
-       class="node"
-       x="1040"
-       y="478"
-       width="100"
-       height="48"
-       rx="6"
-       id="rect74" />
-    <text
-       class="t1"
-       x="1090"
-       y="494"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text75">feed WDOG</text>
-    <text
-       class="sub"
-       x="1090"
-       y="510"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text76">clear flag</text>
+  <polyline class="flow" points="1150,390 1150,410" marker-end="url(#arr)" id="a172" />
+  <g class="step" id="g173">
+    <rect class="node" x="1040" y="412" width="220" height="44" rx="6" id="r174" />
+    <text class="t1" x="1150" y="426.25" text-anchor="middle" dominant-baseline="central" id="t175">status log every 1 s</text>
+    <text class="sub" x="1150" y="441.75" text-anchor="middle" dominant-baseline="central" id="t176">USB console: state + readings</text>
   </g>
-  <g
-     class="fail"
-     id="g78">
-    <rect
-       class="node"
-       x="1160"
-       y="478"
-       width="100"
-       height="48"
-       rx="6"
-       id="rect76" />
-    <text
-       class="t1"
-       x="1210"
-       y="494"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text77">don't feed →</text>
-    <text
-       class="sub"
-       x="1210"
-       y="510"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text78">HW reset</text>
+  <polyline class="flow" points="1150,456 1150,476" marker-end="url(#arr)" id="a177" />
+  <g class="check" id="g178">
+    <rect class="node" x="1040" y="478" width="220" height="44" rx="6" id="r179" />
+    <text class="t1" x="1150" y="492.25" text-anchor="middle" dominant-baseline="central" id="t180">health flag fresh?</text>
+    <text class="sub" x="1150" y="507.75" text-anchor="middle" dominant-baseline="central" id="t181">(control thread alive)</text>
   </g>
-  <polyline
-     class="flow"
-     points="1040,494 1032,494 1032,208 1036,208"
-     marker-end="url(#arr)"
-     id="polyline78" />
-  <polyline
-     class="flow"
-     points="1078,526 1078,606"
-     marker-end="url(#arr)"
-     id="polyline79" />
-  <text
-     class="lbl"
-     x="1086"
-     y="560"
-     id="text79">feed</text>
-  <polyline
-     class="flow"
-     points="1210,526 1210,606"
-     marker-end="url(#arr)"
-     stroke-dasharray="4 3"
-     id="polyline80" />
-  <text
-     class="lbl"
-     x="1218"
-     y="560"
-     id="text80">starves</text>
-  <g
-     class="hw"
-     id="g82">
-    <rect
-       class="node"
-       x="1040"
-       y="610"
-       width="220"
-       height="60"
-       rx="6"
-       id="rect80" />
-    <text
-       class="t1"
-       x="1150"
-       y="630"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text81">hardware WDOG (i.MX RT1062)</text>
-    <text
-       class="sub"
-       x="1150"
-       y="648"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text82">resets MCU if not fed in time</text>
+  <polyline class="flow" points="1090,522 1090,542" marker-end="url(#arr)" id="a182" />
+  <text class="lbl" x="1098" y="536" id="t183">yes</text>
+  <polyline class="flow" points="1210,522 1210,542" marker-end="url(#arr)" id="a184" />
+  <text class="lbl" x="1218" y="536" id="t185">no</text>
+  <g class="step" id="g186">
+    <rect class="node" x="1040" y="544" width="100" height="48" rx="6" id="r187" />
+    <text class="t1" x="1090" y="560.25" text-anchor="middle" dominant-baseline="central" id="t188">feed WDOG</text>
+    <text class="sub" x="1090" y="575.75" text-anchor="middle" dominant-baseline="central" id="t189">clear flag</text>
   </g>
-  <polyline
-     class="flow"
-     points="471,740 471,716"
-     marker-end="url(#arr)"
-     id="polyline82" />
-  <g
-     class="hw"
-     id="g84">
-    <rect
-       class="node"
-       x="396"
-       y="740"
-       width="150"
-       height="60"
-       rx="6"
-       id="rect82" />
-    <text
-       class="t1"
-       x="471"
-       y="760"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text83">ADC — analog sensors</text>
-    <text
-       class="sub"
-       x="471"
-       y="778"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text84">3× pos · 3× current</text>
+  <g class="fail" id="g190">
+    <rect class="node" x="1160" y="544" width="100" height="48" rx="6" id="r191" />
+    <text class="t1" x="1210" y="560.25" text-anchor="middle" dominant-baseline="central" id="t192">don't feed →</text>
+    <text class="sub" x="1210" y="575.75" text-anchor="middle" dominant-baseline="central" id="t193">HW reset</text>
   </g>
-  <polyline
-     class="flow"
-     points="620,716 620,738"
-     marker-end="url(#arr)"
-     id="polyline84" />
-  <g
-     class="hw"
-     id="g86">
-    <rect
-       class="node"
-       x="566"
-       y="740"
-       width="150"
-       height="60"
-       rx="6"
-       id="rect84" />
-    <text
-       class="t1"
-       x="641"
-       y="760"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text85">FlexPWM ×3</text>
-    <text
-       class="sub"
-       x="641"
-       y="778"
-       text-anchor="middle"
-       dominant-baseline="central"
-       id="text86">→ servos (drivers in v2)</text>
+  <polyline class="flow" points="1040,568 1032,568 1032,208 1036,208" marker-end="url(#arr)" id="a194" />
+  <polyline class="flow" points="1078,592 1078,672" marker-end="url(#arr)" id="a195" />
+  <text class="lbl" x="1086" y="636" id="t196">feed</text>
+  <polyline class="flow" points="1210,592 1210,672" marker-end="url(#arr)" stroke-dasharray="4 3" id="a197" />
+  <text class="lbl" x="1218" y="636" id="t198">starves</text>
+  <g class="hw" id="g199">
+    <rect class="node" x="1040" y="676" width="220" height="52" rx="6" id="r200" />
+    <text class="t1" x="1150" y="694.25" text-anchor="middle" dominant-baseline="central" id="t201">hardware WDOG (i.MX RT1062)</text>
+    <text class="sub" x="1150" y="709.75" text-anchor="middle" dominant-baseline="central" id="t202">resets MCU if not fed in time</text>
   </g>
-  <g
-     id="g93">
-    <rect
-       x="20"
-       y="740"
-       width="348"
-       height="132"
-       rx="8"
-       fill="none"
-       stroke="#a09e94"
-       stroke-width="1"
-       id="rect86" />
-    <rect
-       x="30"
-       y="750"
-       width="14"
-       height="10"
-       rx="2"
-       fill="#e8f0fa"
-       stroke="#2f6cb3"
-       id="rect87" />
-    <text
-       class="lbl"
-       x="50"
-       y="759"
-       id="text87">thread step</text>
-    <rect
-       x="140"
-       y="750"
-       width="14"
-       height="10"
-       rx="2"
-       fill="#faefda"
-       stroke="#b97c17"
-       id="rect88" />
-    <text
-       class="lbl"
-       x="160"
-       y="759"
-       id="text88">check / decision</text>
-    <rect
-       x="30"
-       y="770"
-       width="14"
-       height="10"
-       rx="2"
-       fill="#e2f4ec"
-       stroke="#1d9e75"
-       id="rect89" />
-    <text
-       class="lbl"
-       x="50"
-       y="779"
-       id="text89">shared object (lock-free / ISR-safe)</text>
-    <rect
-       x="30"
-       y="790"
-       width="14"
-       height="10"
-       rx="2"
-       fill="#f0efe8"
-       stroke="#8a887f"
-       id="rect90" />
-    <text
-       class="lbl"
-       x="50"
-       y="799"
-       id="text90">hardware / external</text>
-    <rect
-       x="190"
-       y="790"
-       width="14"
-       height="10"
-       rx="2"
-       fill="#fcebeb"
-       stroke="#c04040"
-       id="rect91" />
-    <text
-       class="lbl"
-       x="210"
-       y="799"
-       id="text91">failsafe path</text>
-    <text
-       class="lbl"
-       x="30"
-       y="817"
-       id="text92">loss/CRC counters: atomics — RX writes, TX + supervisor read</text>
-    <text
-       class="lbl"
-       x="30"
-       y="833"
-       id="text93">magic = fixed start marker (0xC0DE); non-matching packets dropped</text>
-    <text
-       class="lbl"
-       x="30"
-       y="849"
-       id="text93b">sender uptime jumps back = restart → sequence tracking resets</text>
-    <text
-       class="lbl"
-       x="30"
-       y="865"
-       id="text93c">ENABLE: arms at measured pose, refused if faults latched</text>
+  <rect class="cont" x="20" y="606" width="240" height="340" rx="10" id="c203" />
+  <text class="contlbl" x="140.0" y="626" text-anchor="middle" id="t204">Current thread (1 kHz, prio 3)</text>
+  <g class="step" id="g205">
+    <rect class="node" x="30" y="642" width="200" height="40" rx="6" id="r206" />
+    <text class="t1" x="130" y="654.25" text-anchor="middle" dominant-baseline="central" id="t207">k_sem_take(tick)</text>
+    <text class="sub" x="130" y="669.75" text-anchor="middle" dominant-baseline="central" id="t208">← k_timer ISR @ 1 kHz</text>
   </g>
-  <g
-     id="g93-4"
-     transform="matrix(0.86680037,0,0,0.70488149,82.637488,396.47654)">
-    <rect
-       x="-78.073944"
-       y="716.21912"
-       width="347.48978"
-       height="228.4101"
-       rx="7.9882708"
-       fill="none"
-       stroke="#a09e94"
-       stroke-width="1.51022"
-       id="rect86-2" />
-    <text
-       class="lbl"
-       x="50"
-       y="759"
-       id="text87-2"
-       style="font-size:10px;fill:#6f6d66"><tspan
-         x="50"
-         y="759"
-         sodipodi:role="line"
-         id="tspan109" /></text>
-    <text
-       xml:space="preserve"
-       style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
-       x="57.205246"
-       y="771.43329"
-       id="text95"><tspan
-         sodipodi:role="line"
-         id="tspan95"
-         x="57.205246"
-         y="771.43329" /></text>
-    <text
-       class="lbl"
-       x="50"
-       y="759"
-       id="text118"
-       style="font-size:10px;fill:#6f6d66"><tspan
-         x="50"
-         y="759"
-         sodipodi:role="line"
-         id="tspan118" /></text>
+  <polyline class="flow" points="130,682 130,698" marker-end="url(#arr)" id="a209" />
+  <g class="step" id="g210">
+    <rect class="node" x="30" y="700" width="200" height="44" rx="6" id="r211" />
+    <text class="t1" x="130" y="714.25" text-anchor="middle" dominant-baseline="central" id="t212">read 3× current (I²C)</text>
+    <text class="sub" x="130" y="729.75" text-anchor="middle" dominant-baseline="central" id="t213">→ current slot, with read time</text>
   </g>
-  <g
-     id="g93-4-3"
-     transform="matrix(0.87623549,0,0,0.48903648,417.57046,570.0949)">
-    <rect
-       x="-78.073944"
-       y="716.21912"
-       width="347.48978"
-       height="228.4101"
-       rx="7.9882708"
-       fill="none"
-       stroke="#a09e94"
-       stroke-width="1.51022"
-       id="rect86-2-3" />
-    <text
-       class="lbl"
-       x="50"
-       y="759"
-       id="text87-2-4"
-       style="font-size:10px;fill:#6f6d66"><tspan
-         x="50"
-         y="759"
-         sodipodi:role="line"
-         id="tspan109-1" /></text>
-    <text
-       xml:space="preserve"
-       style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
-       x="57.205246"
-       y="771.43329"
-       id="text95-1"><tspan
-         sodipodi:role="line"
-         id="tspan95-3"
-         x="57.205246"
-         y="771.43329" /></text>
-    <text
-       class="lbl"
-       x="50"
-       y="759"
-       id="text118-8"
-       style="font-size:10px;fill:#6f6d66"><tspan
-         x="50"
-         y="759"
-         sodipodi:role="line"
-         id="tspan118-7" /></text>
+  <polyline class="flow" points="230,712 256,712 256,615 268,615" marker-end="url(#arr)" id="a214" />
+  <polyline class="flow" points="130,744 130,760" marker-end="url(#arr)" id="a215" />
+  <g class="check" id="g216">
+    <rect class="node" x="30" y="762" width="200" height="44" rx="6" id="r217" />
+    <text class="t1" x="130" y="776.25" text-anchor="middle" dominant-baseline="central" id="t218">ALRT fault latched?</text>
+    <text class="sub" x="130" y="791.75" text-anchor="middle" dominant-baseline="central" id="t219">yes → read DIAG_ALRT, log limit</text>
   </g>
-  <g
-     id="g93-4-3-6"
-     transform="matrix(0.87623549,0,0,0.48903648,737.22341,570.22028)">
-    <rect
-       x="-78.073944"
-       y="716.21912"
-       width="347.48978"
-       height="228.4101"
-       rx="7.9882708"
-       fill="none"
-       stroke="#a09e94"
-       stroke-width="1.51022"
-       id="rect86-2-3-0" />
-    <text
-       class="lbl"
-       x="50"
-       y="759"
-       id="text87-2-4-2"
-       style="font-size:10px;fill:#6f6d66"><tspan
-         x="50"
-         y="759"
-         sodipodi:role="line"
-         id="tspan109-1-4" /></text>
-    <text
-       xml:space="preserve"
-       style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
-       x="57.205246"
-       y="771.43329"
-       id="text95-1-8"><tspan
-         sodipodi:role="line"
-         id="tspan95-3-6"
-         x="57.205246"
-         y="771.43329" /></text>
-    <text
-       class="lbl"
-       x="50"
-       y="759"
-       id="text118-8-5"
-       style="font-size:10px;fill:#6f6d66"><tspan
-         x="50"
-         y="759"
-         sodipodi:role="line"
-         id="tspan118-7-0" /></text>
+  <polyline class="flow" points="130,806 130,822" marker-end="url(#arr)" id="a220" />
+  <g class="check" id="g221">
+    <rect class="node" x="30" y="824" width="200" height="44" rx="6" id="r222" />
+    <text class="t1" x="130" y="838.25" text-anchor="middle" dominant-baseline="central" id="t223">ENABLE asked?</text>
+    <text class="sub" x="130" y="853.75" text-anchor="middle" dominant-baseline="central" id="t224">yes → zero energy + charge</text>
   </g>
-  <g
-     id="g93-4-3-6-0"
-     transform="matrix(0.87623549,0,0,0.48903648,1057.6504,570.01089)">
-    <rect
-       x="-78.073944"
-       y="716.21912"
-       width="347.48978"
-       height="228.4101"
-       rx="7.9882708"
-       fill="none"
-       stroke="#a09e94"
-       stroke-width="1.51022"
-       id="rect86-2-3-0-6" />
-    <text
-       class="lbl"
-       x="50"
-       y="759"
-       id="text87-2-4-2-6"
-       style="font-size:10px;fill:#6f6d66"><tspan
-         x="50"
-         y="759"
-         sodipodi:role="line"
-         id="tspan109-1-4-1" /></text>
-    <text
-       xml:space="preserve"
-       style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
-       x="57.205246"
-       y="771.43329"
-       id="text95-1-8-8"><tspan
-         sodipodi:role="line"
-         id="tspan95-3-6-4"
-         x="57.205246"
-         y="771.43329" /></text>
-    <text
-       class="lbl"
-       x="50"
-       y="759"
-       id="text118-8-5-9"
-       style="font-size:10px;fill:#6f6d66"><tspan
-         x="50"
-         y="759"
-         sodipodi:role="line"
-         id="tspan118-7-0-6" /></text>
+  <polyline class="flow" points="130,868 130,882" marker-end="url(#arr)" id="a225" />
+  <g class="step" id="g226">
+    <rect class="node" x="30" y="884" width="200" height="52" rx="6" id="r227" />
+    <text class="t1" x="130" y="894.5" text-anchor="middle" dominant-baseline="central" id="t228">10 Hz, one board per tick</text>
+    <text class="sub" x="130" y="910" text-anchor="middle" dominant-baseline="central" id="t229">VBUS · power · energy · charge</text>
+    <text class="sub" x="130" y="925.5" text-anchor="middle" dominant-baseline="central" id="t230">setup check → set up again</text>
   </g>
+  <polyline class="flow" points="130,936 130,941 25,941 25,662 28,662" marker-end="url(#arr)" id="a231" />
+  <g class="ipc" id="g232">
+    <rect class="node" x="272" y="880" width="102" height="56" rx="6" id="r233" />
+    <text class="t1" x="323" y="892.5" text-anchor="middle" dominant-baseline="central" id="t234">supply slot</text>
+    <text class="sub" x="323" y="908" text-anchor="middle" dominant-baseline="central" id="t235">10 Hz · read by</text>
+    <text class="sub" x="323" y="923.5" text-anchor="middle" dominant-baseline="central" id="t236">supervisor log</text>
+  </g>
+  <polyline class="flow" points="230,908 268,908" marker-end="url(#arr)" id="a237" />
+  <g class="hw" id="g238">
+    <rect class="node" x="20" y="966" width="240" height="48" rx="6" id="r239" />
+    <text class="t1" x="140" y="982.25" text-anchor="middle" dominant-baseline="central" id="t240">INA228 ×3 — I²C (LPI2C1)</text>
+    <text class="sub" x="140" y="997.75" text-anchor="middle" dominant-baseline="central" id="t241">pins 18/19 · 0x40, 0x41, 0x44</text>
+  </g>
+  <polyline class="flow" points="130,964 130,948" marker-start="url(#arr)" marker-end="url(#arr)" id="a242" />
+  <polyline class="flow" points="260,990 384,990 384,700 388,700" marker-end="url(#arr)" id="a243" />
+  <text class="lbl" x="266" y="984" id="t244">ALRT ×3 → pins 7, 8, 9</text>
+  <g class="hw" id="g245">
+    <rect class="node" x="396" y="790" width="150" height="60" rx="6" id="r246" />
+    <text class="t1" x="471" y="804.5" text-anchor="middle" dominant-baseline="central" id="t247">ADC — positions</text>
+    <text class="sub" x="471" y="820" text-anchor="middle" dominant-baseline="central" id="t248">3× pos · pins 14–16</text>
+    <text class="sub" x="471" y="835.5" text-anchor="middle" dominant-baseline="central" id="t249">switched off until wired</text>
+  </g>
+  <polyline class="flow" points="471,790 471,766" marker-end="url(#arr)" id="a250" />
+  <g class="hw" id="g251">
+    <rect class="node" x="566" y="790" width="150" height="60" rx="6" id="r252" />
+    <text class="t1" x="641" y="804.5" text-anchor="middle" dominant-baseline="central" id="t253">FlexPWM ×3</text>
+    <text class="sub" x="641" y="820" text-anchor="middle" dominant-baseline="central" id="t254">pins 4–6 → servos</text>
+    <text class="sub" x="641" y="835.5" text-anchor="middle" dominant-baseline="central" id="t255">(motor drivers in v2)</text>
+  </g>
+  <polyline class="flow" points="620,766 620,788" marker-end="url(#arr)" id="a256" />
+  <g class="step" id="g257">
+    <rect class="node" x="790" y="776" width="486" height="60" rx="6" id="r258" />
+    <text class="t1" x="1033" y="790.5" text-anchor="middle" dominant-baseline="central" id="t259">boot — main()</text>
+    <text class="sub" x="1033" y="806" text-anchor="middle" dominant-baseline="central" id="t260">outputs off → HAL init (INA228 check + alert limits, ALRT pins)</text>
+    <text class="sub" x="1033" y="821.5" text-anchor="middle" dominant-baseline="central" id="t261">→ watchdog on → release the 5 threads</text>
+  </g>
+  <rect x="396" y="870" width="880" height="146" rx="8" fill="none" stroke="#a09e94" stroke-width="1" id="n262" />
+  <rect x="406" y="880" width="14" height="10" rx="2" fill="#e8f0fa" stroke="#2f6cb3" id="k263" />
+  <text class="lbl" x="426" y="889" id="t264">thread step</text>
+  <rect x="516" y="880" width="14" height="10" rx="2" fill="#faefda" stroke="#b97c17" id="k265" />
+  <text class="lbl" x="536" y="889" id="t266">check / decision</text>
+  <rect x="646" y="880" width="14" height="10" rx="2" fill="#f0efe8" stroke="#8a887f" id="k267" />
+  <text class="lbl" x="666" y="889" id="t268">hardware / external</text>
+  <rect x="786" y="880" width="14" height="10" rx="2" fill="#fcebeb" stroke="#c04040" id="k269" />
+  <text class="lbl" x="806" y="889" id="t270">failsafe path</text>
+  <rect x="906" y="880" width="14" height="10" rx="2" fill="#e2f4ec" stroke="#1d9e75" id="k271" />
+  <text class="lbl" x="926" y="889" id="t272">shared object (short locked copy, queue or atomics)</text>
+  <text class="lbl" x="406" y="910" id="t273">loss/CRC counters: atomics — RX writes, TX + supervisor read</text>
+  <text class="lbl" x="406" y="925" id="t274">magic = fixed start marker (0xC0DE); non-matching packets dropped</text>
+  <text class="lbl" x="406" y="940" id="t275">sender uptime jumps back = restart → sequence tracking resets</text>
+  <text class="lbl" x="406" y="955" id="t276">ENABLE: arms at measured pose, refused if faults latched; CLEAR_FAULTS only while disarmed</text>
+  <text class="lbl" x="406" y="970" id="t277">fault bits: 0x01 over-current · 0x02 range · 0x04 comms lost · 0x08 I²t · 0x10 tracking ·</text>
+  <text class="lbl" x="406" y="985" id="t278">0x20 stack · 0x40 current stale (&gt; 20 ms) · 0x80 ALRT pin (INA228's own limit)</text>
+  <text class="lbl" x="406" y="1000" id="t279">the current thread is the only one on I²C; the control thread never waits for the bus</text>
+  <rect x="20" y="1040" width="630" height="116.0" rx="8" fill="none" stroke="#a09e94" stroke-width="1" id="n280" />
+  <text class="lbl" x="32" y="1058.0" style="font-size:10px;fill:#6f6d66" id="t281">Thread 1 — Control (1 kHz, prio 2): the "Control thread" container:</text>
+  <text class="lbl" x="32" y="1070.5" style="font-size:10px;fill:#6f6d66" id="t282">- k_sem_take(tick) ← k_timer ISR @ 1 kHz</text>
+  <text class="lbl" x="32" y="1083.0" style="font-size:10px;fill:#6f6d66" id="t283">- read sensors: 3× position (ADC), 3× current (current slot), 3× ALRT pin (GPIO)</text>
+  <text class="lbl" x="32" y="1095.5" style="font-size:10px;fill:#6f6d66" id="t284">- copy setpoints from slot / drain command queue (ENABLE also asks to zero energy)</text>
+  <text class="lbl" x="32" y="1108.0" style="font-size:10px;fill:#6f6d66" id="t285">- comms fresh? heartbeat &lt; 500 ms, else failsafe / disarm · setpoint &lt; 50 ms, else hold</text>
+  <text class="lbl" x="32" y="1120.5" style="font-size:10px;fill:#6f6d66" id="t286">- per-tick checks (armed? I &gt; limit? ALRT pin? current fresh? pos in range?)</text>
+  <text class="lbl" x="32" y="1133.0" style="font-size:10px;fill:#6f6d66" id="t287">- 3× joint targets → FlexPWM</text>
+  <text class="lbl" x="32" y="1145.5" style="font-size:10px;fill:#6f6d66" id="t288">- publish snapshot / set health flag</text>
+  <rect x="660" y="1040" width="630" height="116.0" rx="8" fill="none" stroke="#a09e94" stroke-width="1" id="n289" />
+  <text class="lbl" x="672" y="1058.0" style="font-size:10px;fill:#6f6d66" id="t290">Thread 2 — Current (1 kHz, prio 3): the "Current thread" container, the only thread on I²C:</text>
+  <text class="lbl" x="672" y="1070.5" style="font-size:10px;fill:#6f6d66" id="t291">- k_sem_take(tick) ← k_timer ISR @ 1 kHz</text>
+  <text class="lbl" x="672" y="1083.0" style="font-size:10px;fill:#6f6d66" id="t292">- read 3× current from the INA228s → current slot (stale after 20 ms → control disarms)</text>
+  <text class="lbl" x="672" y="1095.5" style="font-size:10px;fill:#6f6d66" id="t293">- ALRT fault latched? read that board's DIAG_ALRT (logs which limit, releases the pin)</text>
+  <text class="lbl" x="672" y="1108.0" style="font-size:10px;fill:#6f6d66" id="t294">- ENABLE asked? zero energy + charge (RSTACC)</text>
+  <text class="lbl" x="672" y="1120.5" style="font-size:10px;fill:#6f6d66" id="t295">- 10 Hz, one board per tick: VBUS · power · energy · charge → supply slot</text>
+  <text class="lbl" x="672" y="1133.0" style="font-size:10px;fill:#6f6d66" id="t296">- 10 Hz: read the setup back; set it up again if the board lost power</text>
+  <text class="lbl" x="672" y="1145.5" style="font-size:10px;fill:#6f6d66" id="t297">- a board that answers again is checked at once</text>
+  <rect x="20" y="1170" width="410" height="91.0" rx="8" fill="none" stroke="#a09e94" stroke-width="1" id="n298" />
+  <text class="lbl" x="32" y="1188.0" style="font-size:10px;fill:#6f6d66" id="t299">Thread 3 — Net RX (prio 5): the "Net RX thread" container:</text>
+  <text class="lbl" x="32" y="1200.5" style="font-size:10px;fill:#6f6d66" id="t300">- recvfrom() blocks on UDP :5005 (master IP only)</text>
+  <text class="lbl" x="32" y="1213.0" style="font-size:10px;fill:#6f6d66" id="t301">- magic + CRC ok? (else CRC err++) · leg ID ours?</text>
+  <text class="lbl" x="32" y="1225.5" style="font-size:10px;fill:#6f6d66" id="t302">- seq &gt; last_seq?</text>
+  <text class="lbl" x="32" y="1238.0" style="font-size:10px;fill:#6f6d66" id="t303">- lost += gap / last_seq = seq</text>
+  <text class="lbl" x="32" y="1250.5" style="font-size:10px;fill:#6f6d66" id="t304">- setpoints → slot / commands → k_msgq / heartbeat → t_hBeat</text>
+  <rect x="440" y="1170" width="410" height="91.0" rx="8" fill="none" stroke="#a09e94" stroke-width="1" id="n305" />
+  <text class="lbl" x="452" y="1188.0" style="font-size:10px;fill:#6f6d66" id="t306">Thread 4 — Telemetry TX (500 Hz, prio 7): the "Telemetry TX" container:</text>
+  <text class="lbl" x="452" y="1200.5" style="font-size:10px;fill:#6f6d66" id="t307">- k_sleep(2 ms) — 500 Hz</text>
+  <text class="lbl" x="452" y="1213.0" style="font-size:10px;fill:#6f6d66" id="t308">- copy snapshot + link stats</text>
+  <text class="lbl" x="452" y="1225.5" style="font-size:10px;fill:#6f6d66" id="t309">- build packet (seq++ · timestamp · CRC16)</text>
+  <text class="lbl" x="452" y="1238.0" style="font-size:10px;fill:#6f6d66" id="t310">- sendto(master :5006) · count sent, log failures</text>
+  <rect x="860" y="1170" width="430" height="91.0" rx="8" fill="none" stroke="#a09e94" stroke-width="1" id="n311" />
+  <text class="lbl" x="872" y="1188.0" style="font-size:10px;fill:#6f6d66" id="t312">Thread 5 — Supervisor (10–50 Hz, prio 9): the "Supervisor" container:</text>
+  <text class="lbl" x="872" y="1200.5" style="font-size:10px;fill:#6f6d66" id="t313">- k_sleep(cfg.period), default 50 ms</text>
+  <text class="lbl" x="872" y="1213.0" style="font-size:10px;fill:#6f6d66" id="t314">- slow checks (I²t, tracking error, stack margins; loss only logged)</text>
+  <text class="lbl" x="872" y="1225.5" style="font-size:10px;fill:#6f6d66" id="t315">- on fault: flag in telemetry, disable leg</text>
+  <text class="lbl" x="872" y="1238.0" style="font-size:10px;fill:#6f6d66" id="t316">- status log every 1 s (USB console)</text>
+  <text class="lbl" x="872" y="1250.5" style="font-size:10px;fill:#6f6d66" id="t317">- health flag fresh? feed WDOG / don't feed → HW reset</text>
 </svg>

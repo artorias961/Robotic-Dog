@@ -1,0 +1,1288 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1310"
+   height="1060"
+   viewBox="0 0 1310 1060"
+   role="img"
+   aria-label="Master board gait pipeline block diagram with future lidar and camera inputs"
+   version="1.1"
+   id="svg76"
+   sodipodi:docname="master-gait-pipeline.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview76"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="0.61746032"
+     inkscape:cx="608.94602"
+     inkscape:cy="693.16195"
+     inkscape:window-width="1278"
+     inkscape:window-height="1360"
+     inkscape:window-x="-7"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg76" />
+  <style
+     id="style1">
+svg{font-family:&quot;Segoe UI&quot;,system-ui,sans-serif}
+.step rect{fill:#e8f0fa;stroke:#2f6cb3}
+.check rect{fill:#faefda;stroke:#b97c17}
+.ipc rect{fill:#e2f4ec;stroke:#1d9e75}
+.hw rect{fill:#f0efe8;stroke:#8a887f}
+.fail rect{fill:#fcebeb;stroke:#c04040}
+.step text{fill:#123c6b}.step .sub{fill:#2f6cb3}
+.check text{fill:#6b4a06}.check .sub{fill:#96640e}
+.ipc text{fill:#0a5742}.ipc .sub{fill:#117a5a}
+.hw text{fill:#45443f}.hw .sub{fill:#6b6a62}
+.fail text{fill:#7a1f1f}.fail .sub{fill:#a33333}
+rect.node{stroke-width:1.1}
+.cont{fill:none;stroke:#a09e94;stroke-width:1;stroke-dasharray:5 4}
+.contlbl{fill:#2b2a26;font-size:11.5px;font-weight:600}
+.flow{fill:none;stroke:#6f6d66;stroke-width:1.3}
+.lbl{fill:#6f6d66;font-size:10px}
+.t1{font-size:11px;font-weight:600}
+.sub{font-size:10.5px;font-weight:400}
+.title{fill:#2b2a26;font-size:15px;font-weight:600}
+.stance{fill:#2f6cb3}
+.swing{fill:none;stroke:#6f6d66;stroke-width:1}
+</style>
+  <rect
+     x="0"
+     y="0"
+     width="1310"
+     height="1270.527"
+     fill="#faf9f5"
+     id="rect1"
+     style="stroke-width:1.15951" />
+  <text
+     class="lbl"
+     x="19.997999"
+     y="991.04279"
+     id="text29-3-7-0-8"
+     style="font-size:10px;fill:#6f6d66"><tspan
+       sodipodi:role="line"
+       x="19.997999"
+       y="991.04279"
+       id="tspan182">Thread 1 — Control (100 Hz): the entire center “Gait pipeline” container, plus the per-leg watchdog and safety-gate logic:</tspan><tspan
+       sodipodi:role="line"
+       x="19.997999"
+       y="1003.5428"
+       id="tspan81"></tspan><tspan
+       sodipodi:role="line"
+       x="19.997999"
+       y="1016.0428"
+       id="tspan82">- system + gait FSM → per-leg phase → foot trajectory → inverse kinematics → safety gate → pack setpoints → UDP sendto ×4 · status line</tspan><tspan
+       sodipodi:role="line"
+       x="19.997999"
+       y="1028.5427"
+       id="tspan83">- also from the right column: per-leg watchdog and state estimator — in the code these run inside the control thread’s tick, not in their own thread</tspan></text>
+  <text
+     class="lbl"
+     x="723.38446"
+     y="1002.2864"
+     id="text29-3-7-0-8-7"
+     style="font-size:10px;fill:#6f6d66"><tspan
+       sodipodi:role="line"
+       x="723.38446"
+       y="1002.2864"
+       id="tspan83-3">Thread 2 — RX: from the right column:</tspan><tspan
+       sodipodi:role="line"
+       x="723.38446"
+       y="1014.7864"
+       id="tspan86"></tspan><tspan
+       sodipodi:role="line"
+       x="723.38446"
+       y="1027.2865"
+       id="tspan87">- UDP recvfrom telemetry (≈500 Hz × 4 legs)</tspan></text>
+  <text
+     class="lbl"
+     x="983.16223"
+     y="999.60632"
+     id="text29-3-7-0-8-7-7"
+     style="font-size:10px;fill:#6f6d66"><tspan
+       sodipodi:role="line"
+       x="983.16223"
+       y="999.60632"
+       id="tspan87-3">Thread 3 — Main / operator:</tspan><tspan
+       sodipodi:role="line"
+       x="983.16223"
+       y="1012.1063"
+       id="tspan89"></tspan><tspan
+       sodipodi:role="line"
+       x="983.16223"
+       y="1024.6063"
+       id="tspan90">- operator input (gamepad box at top)</tspan><tspan
+       sodipodi:role="line"
+       x="983.16223"
+       y="1037.1063"
+       id="tspan91">- status line after each command</tspan></text>
+  <g
+     id="g93-4-3-6"
+     transform="matrix(1.9148693,0,0,0.48697346,158.42216,607.42951)">
+    <rect
+       x="-78.073944"
+       y="716.21912"
+       width="347.48978"
+       height="228.4101"
+       rx="7.9882708"
+       fill="none"
+       stroke="#a09e94"
+       stroke-width="1.51022"
+       id="rect86-2-3-0" />
+    <text
+       class="lbl"
+       x="50"
+       y="759"
+       id="text87-2-4-2"
+       style="font-size:10px;fill:#6f6d66"><tspan
+         x="50"
+         y="759"
+         sodipodi:role="line"
+         id="tspan109-1-4" /></text>
+    <text
+       xml:space="preserve"
+       style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
+       x="57.205246"
+       y="771.43329"
+       id="text95-1-8"><tspan
+         sodipodi:role="line"
+         id="tspan95-3-6"
+         x="57.205246"
+         y="771.43329" /></text>
+    <text
+       class="lbl"
+       x="50"
+       y="759"
+       id="text118-8-5"
+       style="font-size:10px;fill:#6f6d66"><tspan
+         x="50"
+         y="759"
+         sodipodi:role="line"
+         id="tspan118-7-0" /></text>
+  </g>
+  <g
+     id="g93-4-3-6-1"
+     transform="matrix(0.67837159,0,0,0.46123225,756.3538,631.06663)">
+    <rect
+       x="-78.073944"
+       y="716.21912"
+       width="347.48978"
+       height="228.4101"
+       rx="7.9882708"
+       fill="none"
+       stroke="#a09e94"
+       stroke-width="1.51022"
+       id="rect86-2-3-0-6" />
+    <text
+       class="lbl"
+       x="50"
+       y="759"
+       id="text87-2-4-2-8"
+       style="font-size:10px;fill:#6f6d66"><tspan
+         x="50"
+         y="759"
+         sodipodi:role="line"
+         id="tspan109-1-4-5" /></text>
+    <text
+       xml:space="preserve"
+       style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
+       x="57.205246"
+       y="771.43329"
+       id="text95-1-8-7"><tspan
+         sodipodi:role="line"
+         id="tspan95-3-6-6"
+         x="57.205246"
+         y="771.43329" /></text>
+    <text
+       class="lbl"
+       x="50"
+       y="759"
+       id="text118-8-5-1"
+       style="font-size:10px;fill:#6f6d66"><tspan
+         x="50"
+         y="759"
+         sodipodi:role="line"
+         id="tspan118-7-0-8" /></text>
+  </g>
+  <g
+     id="g93-4-3-6-1-3"
+     transform="matrix(0.67837159,0,0,0.46123225,1016.5474,630.50622)">
+    <rect
+       x="-78.073944"
+       y="716.21912"
+       width="347.48978"
+       height="228.4101"
+       rx="7.9882708"
+       fill="none"
+       stroke="#a09e94"
+       stroke-width="1.51022"
+       id="rect86-2-3-0-6-3" />
+    <text
+       class="lbl"
+       x="50"
+       y="759"
+       id="text87-2-4-2-8-4"
+       style="font-size:10px;fill:#6f6d66"><tspan
+         x="50"
+         y="759"
+         sodipodi:role="line"
+         id="tspan109-1-4-5-1" /></text>
+    <text
+       xml:space="preserve"
+       style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
+       x="57.205246"
+       y="771.43329"
+       id="text95-1-8-7-1"><tspan
+         sodipodi:role="line"
+         id="tspan95-3-6-6-3"
+         x="57.205246"
+         y="771.43329" /></text>
+    <text
+       class="lbl"
+       x="50"
+       y="759"
+       id="text118-8-5-1-8"
+       style="font-size:10px;fill:#6f6d66"><tspan
+         x="50"
+         y="759"
+         sodipodi:role="line"
+         id="tspan118-7-0-8-7" /></text>
+  </g>
+  <defs
+     id="defs1">
+    <marker
+       id="arr"
+       viewBox="0 0 10 10"
+       refX="8"
+       refY="5"
+       markerWidth="6.5"
+       markerHeight="6.5"
+       orient="auto-start-reverse">
+      <path
+         d="M2 1L8 5L2 9"
+         fill="none"
+         stroke="context-stroke"
+         stroke-width="1.5"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         id="path1" />
+    </marker>
+  </defs>
+  <text
+     class="title"
+     x="24"
+     y="34"
+     id="text1">Master board — how the dog walks</text>
+  <g
+     class="hw"
+     id="g3">
+    <rect
+       class="node"
+       x="430"
+       y="50"
+       width="270"
+       height="44"
+       rx="6"
+       id="rect2" />
+    <text
+       class="t1"
+       x="565"
+       y="65"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text2">operator input: console (gamepad later)</text>
+    <text
+       class="sub"
+       x="565"
+       y="81"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text3">speed · turn · enable · ack fault · E-stop</text>
+  </g>
+  <polyline
+     class="flow"
+     points="565,94 565,156"
+     marker-end="url(#arr)"
+     id="polyline3" />
+  <rect
+     class="cont"
+     x="20"
+     y="120"
+     width="330"
+     height="500"
+     rx="10"
+     id="rect3" />
+  <text
+     class="contlbl"
+     x="185"
+     y="142"
+     text-anchor="middle"
+     id="text4">Future sensors — planned, not in code yet</text>
+  <g
+     class="hw"
+     id="g6">
+    <rect
+       class="node"
+       x="40"
+       y="160"
+       width="290"
+       height="48"
+       rx="6"
+       stroke-dasharray="4 3"
+       id="rect4" />
+    <text
+       class="t1"
+       x="185"
+       y="176"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text5">360° LiDAR (low res)</text>
+    <text
+       class="sub"
+       x="185"
+       y="193"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text6">surround hazard belt, all directions</text>
+  </g>
+  <g
+     class="hw"
+     id="g8">
+    <rect
+       class="node"
+       x="40"
+       y="232"
+       width="290"
+       height="48"
+       rx="6"
+       stroke-dasharray="4 3"
+       id="rect6" />
+    <text
+       class="t1"
+       x="185"
+       y="248"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text7">fixed LiDAR (high res)</text>
+    <text
+       class="sub"
+       x="185"
+       y="265"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text8">fine detail, one focus direction</text>
+  </g>
+  <g
+     class="hw"
+     id="g10">
+    <rect
+       class="node"
+       x="40"
+       y="304"
+       width="290"
+       height="48"
+       rx="6"
+       stroke-dasharray="4 3"
+       id="rect8" />
+    <text
+       class="t1"
+       x="185"
+       y="320"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text9">D435i RGB-D camera + IMU</text>
+    <text
+       class="sub"
+       x="185"
+       y="337"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text10">depth · visual odometry · terrain</text>
+  </g>
+  <polyline
+     class="flow"
+     points="330,184 340,184 340,412 332,412"
+     marker-end="url(#arr)"
+     stroke-dasharray="5 4"
+     id="polyline10" />
+  <polyline
+     class="flow"
+     points="40,256 30,256 30,430 38,430"
+     marker-end="url(#arr)"
+     stroke-dasharray="5 4"
+     id="polyline11" />
+  <polyline
+     class="flow"
+     points="185,352 185,396"
+     marker-end="url(#arr)"
+     stroke-dasharray="5 4"
+     id="polyline12" />
+  <g
+     class="hw"
+     id="g15">
+    <rect
+       class="node"
+       x="40"
+       y="400"
+       width="290"
+       height="88"
+       rx="6"
+       stroke-dasharray="4 3"
+       id="rect12" />
+    <text
+       class="t1"
+       x="185"
+       y="420"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text12">perception / world model</text>
+    <text
+       class="sub"
+       x="185"
+       y="437"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text13">obstacle costmap · terrain heightmap</text>
+    <text
+       class="sub"
+       x="185"
+       y="453"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text14">body-relative hazards</text>
+    <text
+       class="sub"
+       x="185"
+       y="470"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text15">→ slows / steers gait · foothold hints</text>
+  </g>
+  <polyline
+     class="flow"
+     points="330,430 375,430 375,184 416,184"
+     marker-end="url(#arr)"
+     stroke-dasharray="5 4"
+     id="polyline15" />
+  <polyline
+     class="flow"
+     points="330,465 385,465 385,344 416,344"
+     marker-end="url(#arr)"
+     stroke-dasharray="5 4"
+     id="polyline16" />
+  <text
+     class="lbl"
+     x="40"
+     y="560"
+     id="text16">walking must work with zero sensors:</text>
+  <text
+     class="lbl"
+     x="40"
+     y="576"
+     id="text17">perception only adjusts speed, heading and</text>
+  <text
+     class="lbl"
+     x="40"
+     y="592"
+     id="text18">foothold choice — it never drives joints directly</text>
+  <rect
+     class="cont"
+     x="400"
+     y="120"
+     width="330"
+     height="640"
+     rx="10"
+     id="rect18" />
+  <text
+     class="contlbl"
+     x="412"
+     y="142"
+     id="text19">Gait pipeline (100 Hz)</text>
+  <g
+     class="step"
+     id="g21">
+    <rect
+       class="node"
+       x="420"
+       y="160"
+       width="290"
+       height="48"
+       rx="6"
+       id="rect19" />
+    <text
+       class="t1"
+       x="565"
+       y="176"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text20">system + gait FSM (φ clock)</text>
+    <text
+       class="sub"
+       x="565"
+       y="193"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text21">boot → idle → standup → stand → trot · fault</text>
+  </g>
+  <polyline
+     class="flow"
+     points="565,208 565,238"
+     marker-end="url(#arr)"
+     id="polyline21" />
+  <g
+     class="step"
+     id="g23">
+    <rect
+       class="node"
+       x="420"
+       y="240"
+       width="290"
+       height="48"
+       rx="6"
+       id="rect21" />
+    <text
+       class="t1"
+       x="565"
+       y="256"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text22">per-leg phase</text>
+    <text
+       class="sub"
+       x="565"
+       y="273"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text23">stance ↔ swing, diagonal pairs in trot</text>
+  </g>
+  <polyline
+     class="flow"
+     points="565,288 565,318"
+     marker-end="url(#arr)"
+     id="polyline23" />
+  <g
+     class="step"
+     id="g25">
+    <rect
+       class="node"
+       x="420"
+       y="320"
+       width="290"
+       height="48"
+       rx="6"
+       id="rect23" />
+    <text
+       class="t1"
+       x="565"
+       y="336"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text24">foot trajectory generator</text>
+    <text
+       class="sub"
+       x="565"
+       y="353"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text25">stance: push back · swing: arc forward</text>
+  </g>
+  <polyline
+     class="flow"
+     points="565,368 565,398"
+     marker-end="url(#arr)"
+     id="polyline25" />
+  <g
+     class="step"
+     id="g27">
+    <rect
+       class="node"
+       x="420"
+       y="400"
+       width="290"
+       height="48"
+       rx="6"
+       id="rect25" />
+    <text
+       class="t1"
+       x="565"
+       y="416"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text26">inverse kinematics ×4 legs</text>
+    <text
+       class="sub"
+       x="565"
+       y="433"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text27">foot (x, y, z) → tilt, hip, knee angles</text>
+  </g>
+  <polyline
+     class="flow"
+     points="565,448 565,478"
+     marker-end="url(#arr)"
+     id="polyline27" />
+  <g
+     class="check"
+     id="g29">
+    <rect
+       class="node"
+       x="420"
+       y="480"
+       width="290"
+       height="48"
+       rx="6"
+       id="rect27" />
+    <text
+       class="t1"
+       x="565"
+       y="496"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text28">safety gate: legs healthy + armed?</text>
+    <text
+       class="sub"
+       x="565"
+       y="513"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text29">fault → stop setpoints, disarm</text>
+  </g>
+  <polyline
+     class="flow"
+     points="565,528 565,558"
+     marker-end="url(#arr)"
+     id="polyline29" />
+  <g
+     class="step"
+     id="g31">
+    <rect
+       class="node"
+       x="420"
+       y="560"
+       width="290"
+       height="48"
+       rx="6"
+       id="rect29" />
+    <text
+       class="t1"
+       x="565"
+       y="576"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text30">pack setpoints + seq + CRC</text>
+    <text
+       class="sub"
+       x="565"
+       y="593"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text31">12 joint angles split into 4 packets</text>
+  </g>
+  <polyline
+     class="flow"
+     points="565,608 565,638"
+     marker-end="url(#arr)"
+     id="polyline31" />
+  <g
+     class="step"
+     id="g33">
+    <rect
+       class="node"
+       x="420"
+       y="640"
+       width="290"
+       height="44"
+       rx="6"
+       id="rect31" />
+    <text
+       class="t1"
+       x="565"
+       y="655"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text32">UDP sendto ×4</text>
+    <text
+       class="sub"
+       x="565"
+       y="671"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text33">setpoints 100 Hz · heartbeat 10 Hz always</text>
+  </g>
+  <polyline
+     class="flow"
+     points="565,684 565,788"
+     marker-end="url(#arr)"
+     id="polyline33" />
+  <text
+     class="lbl"
+     x="575"
+     y="750"
+     id="text34">setpoints · commands · heartbeat</text>
+  <text
+     class="lbl"
+     x="412"
+     y="702"
+     id="noteStandup1">STANDUP: joint ramp from</text>
+  <text
+     class="lbl"
+     x="412"
+     y="716"
+     id="noteStandup2">measured pose (no IK)</text>
+  <text
+     class="lbl"
+     x="412"
+     y="732"
+     id="noteCmd1">commands on state change,</text>
+  <text
+     class="lbl"
+     x="412"
+     y="746"
+     id="noteCmd2">retried until ACKed</text>
+  <rect
+     class="cont"
+     x="800"
+     y="120"
+     width="300"
+     height="380"
+     rx="10"
+     id="rect34" />
+  <text
+     class="contlbl"
+     x="950"
+     y="142"
+     text-anchor="middle"
+     id="text35">State &amp; health — in code now</text>
+  <g
+     class="step"
+     id="g37">
+    <rect
+       class="node"
+       x="820"
+       y="160"
+       width="260"
+       height="48"
+       rx="6"
+       id="rect35" />
+    <text
+       class="t1"
+       x="950"
+       y="176"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text36">UDP recvfrom telemetry</text>
+    <text
+       class="sub"
+       x="950"
+       y="193"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text37">≈500 Hz from each of 4 legs</text>
+  </g>
+  <polyline
+     class="flow"
+     points="950,208 950,238"
+     marker-end="url(#arr)"
+     id="polyline37" />
+  <g
+     class="step"
+     id="g40">
+    <rect
+       class="node"
+       x="820"
+       y="240"
+       width="260"
+       height="56"
+       rx="6"
+       id="rect37" />
+    <text
+       class="t1"
+       x="950"
+       y="255"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text38">state estimator</text>
+    <text
+       class="sub"
+       x="950"
+       y="271"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text39">joint angles → body height</text>
+    <text
+       class="sub"
+       x="950"
+       y="287"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text40">IMU hook (no driver yet) · VO later</text>
+  </g>
+  <polyline
+     class="flow"
+     points="950,296 950,326"
+     marker-end="url(#arr)"
+     id="polyline40" />
+  <g
+     class="check"
+     id="g43">
+    <rect
+       class="node"
+       x="820"
+       y="328"
+       width="260"
+       height="56"
+       rx="6"
+       id="rect40" />
+    <text
+       class="t1"
+       x="950"
+       y="343"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text41">per-leg watchdog</text>
+    <text
+       class="sub"
+       x="950"
+       y="359"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text42">telemetry fresh? fault flags?</text>
+    <text
+       class="sub"
+       x="950"
+       y="375"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text43">loss counters rising?</text>
+  </g>
+  <polyline
+     class="flow"
+     points="950,384 950,414"
+     marker-end="url(#arr)"
+     id="polyline43" />
+  <g
+     class="step"
+     id="g44">
+    <rect
+       class="node"
+       x="820"
+       y="416"
+       width="260"
+       height="44"
+       rx="6"
+       id="rect43" />
+    <text
+       class="t1"
+       x="950"
+       y="438"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text44">status line (log/dashboard later)</text>
+  </g>
+  <polyline
+     class="flow"
+     points="942,552 942,502"
+     stroke-dasharray="5 4"
+     marker-end="url(#arr)"
+     id="polyline44" />
+  <rect
+     class="cont"
+     x="800"
+     y="520"
+     width="284"
+     height="104"
+     rx="10"
+     id="rect44" />
+  <text
+     class="contlbl"
+     x="806"
+     y="540"
+     id="text45">Body IMU — v1</text>
+  <g
+     class="hw"
+     id="g47">
+    <rect
+       class="node"
+       x="820"
+       y="556"
+       width="244"
+       height="52"
+       rx="6"
+       stroke-dasharray="4 3"
+       id="rect45" />
+    <text
+       class="t1"
+       x="942"
+       y="573"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text46">dedicated IMU</text>
+    <text
+       class="sub"
+       x="942"
+       y="591"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text47">no driver yet · tilt fault ready</text>
+  </g>
+  <polyline
+     class="flow"
+     points="820,268 760,268 760,184 714,184"
+     marker-end="url(#arr)"
+     id="polyline47" />
+  <text
+     class="lbl"
+     x="766"
+     y="262"
+     id="text48">body state</text>
+  <polyline
+     class="flow"
+     points="820,356 770,356 770,504 714,504"
+     marker-end="url(#arr)"
+     id="polyline48" />
+  <text
+     class="lbl"
+     x="776"
+     y="350"
+     id="text49">leg faults</text>
+  <g
+     class="hw"
+     id="g50">
+    <rect
+       class="node"
+       x="400"
+       y="790"
+       width="700"
+       height="40"
+       rx="6"
+       id="rect49" />
+    <text
+       class="t1"
+       x="750"
+       y="810"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text50">Ethernet switch · 192.168.1.0/24 · master .1 → legs .11–.14 :5005 · telemetry → master :5006</text>
+  </g>
+  <polyline
+     class="flow"
+     points="1090,788 1090,184 1082,184"
+     marker-end="url(#arr)"
+     id="polyline50" />
+  <text
+     class="lbl"
+     x="1100"
+     y="640"
+     id="text51">telemetry ↑ ~500 Hz</text>
+  <text
+     class="lbl"
+     x="1106"
+     y="520"
+     id="text52">dashed boxes &amp; arrows =</text>
+  <text
+     class="lbl"
+     x="1106"
+     y="536"
+     id="text53">future, not in code yet</text>
+  <line
+     class="flow"
+     x1="480"
+     y1="832"
+     x2="480"
+     y2="856"
+     marker-start="url(#arr)"
+     marker-end="url(#arr)"
+     id="line53" />
+  <line
+     class="flow"
+     x1="660"
+     y1="832"
+     x2="660"
+     y2="856"
+     marker-start="url(#arr)"
+     marker-end="url(#arr)"
+     id="line54" />
+  <line
+     class="flow"
+     x1="840"
+     y1="832"
+     x2="840"
+     y2="856"
+     marker-start="url(#arr)"
+     marker-end="url(#arr)"
+     id="line55" />
+  <line
+     class="flow"
+     x1="1020"
+     y1="832"
+     x2="1020"
+     y2="856"
+     marker-start="url(#arr)"
+     marker-end="url(#arr)"
+     id="line56" />
+  <g
+     class="step"
+     id="g57">
+    <rect
+       class="node"
+       x="400"
+       y="858"
+       width="160"
+       height="60"
+       rx="6"
+       id="rect56" />
+    <text
+       class="t1"
+       x="480"
+       y="878"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text56">Teensy — Front Right</text>
+    <text
+       class="sub"
+       x="480"
+       y="896"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text57">192.168.1.11 · firmware 1</text>
+  </g>
+  <g
+     class="step"
+     id="g59">
+    <rect
+       class="node"
+       x="580"
+       y="858"
+       width="160"
+       height="60"
+       rx="6"
+       id="rect57" />
+    <text
+       class="t1"
+       x="660"
+       y="878"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text58">Teensy — Front Left</text>
+    <text
+       class="sub"
+       x="660"
+       y="896"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text59">192.168.1.12 · firmware 2</text>
+  </g>
+  <g
+     class="step"
+     id="g61">
+    <rect
+       class="node"
+       x="760"
+       y="858"
+       width="160"
+       height="60"
+       rx="6"
+       id="rect59" />
+    <text
+       class="t1"
+       x="840"
+       y="878"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text60">Teensy — Rear Right</text>
+    <text
+       class="sub"
+       x="840"
+       y="896"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text61">192.168.1.13 · firmware 3</text>
+  </g>
+  <g
+     class="step"
+     id="g63">
+    <rect
+       class="node"
+       x="940"
+       y="858"
+       width="160"
+       height="60"
+       rx="6"
+       id="rect61" />
+    <text
+       class="t1"
+       x="1020"
+       y="878"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text62">Teensy — Rear Left</text>
+    <text
+       class="sub"
+       x="1020"
+       y="896"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text63">192.168.1.14 · firmware 4</text>
+  </g>
+  <g
+     class="fail"
+     id="g66">
+    <rect
+       class="node"
+       x="1120"
+       y="858"
+       width="176"
+       height="60"
+       rx="6"
+       id="rect63" />
+    <text
+       class="t1"
+       x="1208"
+       y="876"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text64">hardware E-stop</text>
+    <text
+       class="sub"
+       x="1208"
+       y="893"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text65">cuts motor power rail</text>
+    <text
+       class="sub"
+       x="1208"
+       y="908"
+       text-anchor="middle"
+       dominant-baseline="central"
+       id="text66">no software in path</text>
+  </g>
+  <g
+     id="g76">
+    <rect
+       x="20"
+       y="710"
+       width="330"
+       height="190"
+       rx="8"
+       fill="none"
+       stroke="#a09e94"
+       stroke-width="1"
+       id="rect66" />
+    <text
+       class="contlbl"
+       x="185"
+       y="732"
+       text-anchor="middle"
+       id="text67">trot cycle — how it walks</text>
+    <text
+       class="lbl"
+       x="46"
+       y="755"
+       dominant-baseline="central"
+       id="text68">FL</text>
+    <rect
+       class="stance"
+       x="90"
+       y="748"
+       width="120"
+       height="14"
+       rx="2"
+       id="rect68" />
+    <rect
+       class="swing"
+       x="210"
+       y="748"
+       width="120"
+       height="14"
+       rx="2"
+       id="rect69" />
+    <text
+       class="lbl"
+       x="46"
+       y="783"
+       dominant-baseline="central"
+       id="text69">FR</text>
+    <rect
+       class="swing"
+       x="90"
+       y="776"
+       width="120"
+       height="14"
+       rx="2"
+       id="rect70" />
+    <rect
+       class="stance"
+       x="210"
+       y="776"
+       width="120"
+       height="14"
+       rx="2"
+       id="rect71" />
+    <text
+       class="lbl"
+       x="46"
+       y="811"
+       dominant-baseline="central"
+       id="text71">RL</text>
+    <rect
+       class="swing"
+       x="90"
+       y="804"
+       width="120"
+       height="14"
+       rx="2"
+       id="rect72" />
+    <rect
+       class="stance"
+       x="210"
+       y="804"
+       width="120"
+       height="14"
+       rx="2"
+       id="rect73" />
+    <text
+       class="lbl"
+       x="46"
+       y="839"
+       dominant-baseline="central"
+       id="text73">RR</text>
+    <rect
+       class="stance"
+       x="90"
+       y="832"
+       width="120"
+       height="14"
+       rx="2"
+       id="rect74" />
+    <rect
+       class="swing"
+       x="210"
+       y="832"
+       width="120"
+       height="14"
+       rx="2"
+       id="rect75" />
+    <text
+       class="lbl"
+       x="46"
+       y="868"
+       id="text75">filled = stance (foot down, pushes body) · empty = swing</text>
+    <text
+       class="lbl"
+       x="210"
+       y="886"
+       text-anchor="middle"
+       id="text76">one gait cycle, phase 0 → 1</text>
+  </g>
+</svg>

@@ -1,6 +1,7 @@
 # Quadruped master board
 
-C++20 implementation of the "Master board — how the dog walks" diagram.
+C++20 implementation of the "Master board — how the dog walks" diagram
+([`Block_Diagrams/master-gait-pipeline.svg`](../Block_Diagrams/master-gait-pipeline.svg)).
 Protocol, IPs, rates and timeouts follow `Conventions.md` in the team wiki.
 
 ## Diagram box → code map
@@ -10,11 +11,14 @@ Protocol, IPs, rates and timeouts follow `Conventions.md` in the team wiki.
 | system + gait FSM (boot→…→trot · fault)   | `include/quad/state_machine.hpp`  |
 | per-leg phase, foot trajectory generator  | `include/quad/gait.hpp`           |
 | inverse kinematics ×4 legs                | `include/quad/kinematics.hpp`     |
-| safety gate + per-leg watchdog            | `include/quad/safety.hpp`         |
+| per-leg watchdog = safety gate (feeds the FSM) | `include/quad/safety.hpp`    |
 | pack setpoints + seq + CRC, UDP sendto ×4 | `include/quad/comms.hpp`          |
+| commands on state change (sent up to 10×, 20 ms apart) | `CommandSequencer` in `main.cpp`, `LegLink` in `include/quad/comms.hpp` |
+| STANDUP ramp from the measured pose       | `control_thread` in `main.cpp`    |
 | heartbeat 10 Hz always                    | `control_thread` in `main.cpp`    |
-| UDP recvfrom telemetry                    | `rx_thread` in `main.cpp`         |
+| UDP recvfrom (:5006): telemetry + command ACKs | `rx_thread` in `main.cpp`, `PacketParser` in `include/quad/comms.hpp` |
 | state estimator (+ dedicated IMU hook)    | `include/quad/estimator.hpp`      |
+| status line on every change               | `control_thread` in `main.cpp`    |
 | packet format, magic 0xC0DE, CRC16        | `include/quad/protocol.hpp`       |
 | latest-value-wins shared slots            | `include/quad/latest.hpp`         |
 | precise 100 Hz tick (Windows HR timer)    | `include/quad/timing.hpp`         |
@@ -22,8 +26,9 @@ Protocol, IPs, rates and timeouts follow `Conventions.md` in the team wiki.
 
 ## Threads
 
-- **control** (`std::jthread`, 100 Hz): FSM → phase → trajectory → IK →
-  safety gate → pack + send. Sends the 10 Hz heartbeat in *every* state, which
+- **control** (`std::jthread`, 100 Hz): per-leg watchdog / safety gate →
+  state estimator → FSM → commands → STANDUP ramp, or phase → trajectory →
+  IK → pack + send. Sends the 10 Hz heartbeat in *every* state, which
   lets a Teensy tell "master idle" from "master dead" (legs disarm after
   500 ms without it). Prints a status line whenever the state or a leg changes.
 - **rx**: blocks on UDP :5006, validates magic/CRC/seq, counts losses,
